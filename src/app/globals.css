@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f5f7fb;
+  --foreground: #102033;
+  --primary: #0f8a4b;
+  --primary-dark: #075f35;
+  --accent: #f5c542;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #d8dee9;
+  border-radius: 8px;
+  padding: 0.7rem 0.8rem;
+  background: white;
+}
+
+label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+button,
+.button {
+  border: 0;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+}
+
+button.secondary,
+.button.secondary {
+  background: #102033;
+}
+
+button.danger {
+  background: #b42318;
+}
+
+.container {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 10px 30px rgba(16, 32, 51, 0.06);
+}
+
+.grid-auto {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+th,
+td {
+  border-bottom: 1px solid #e7ebf2;
+  padding: 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #607086;
+}
+
+.hero {
+  background:
+    linear-gradient(135deg, rgba(6, 95, 53, 0.95), rgba(16, 32, 51, 0.88)),
+    radial-gradient(circle at 80% 20%, rgba(245, 197, 66, 0.9), transparent 28%);
+  color: white;
+  padding: 3rem 0;
+}
+
+.muted {
+  color: #607086;
+}
+
+.stack {
+  display: grid;
+  gap: 1rem;
+}

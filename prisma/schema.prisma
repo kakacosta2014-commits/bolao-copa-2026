@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum GameStatus {
+  AGENDADO
+  AO_VIVO
+  ENCERRADO
+  CANCELADO
+}
+
+model Participant {
+  id                 String             @id @default(cuid())
+  name               String
+  whatsapp           String
+  accessToken        String             @unique
+  paid               Boolean            @default(false)
+  paidAt             DateTime?
+  predictions        Prediction[]
+  specialPrediction  SpecialPrediction?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+model Game {
+  id          String       @id @default(cuid())
+  number      Int          @unique
+  stage       String
+  groupName   String?
+  homeTeam    String
+  awayTeam    String
+  startsAt    DateTime
+  status      GameStatus   @default(AGENDADO)
+  homeScore   Int?
+  awayScore   Int?
+  predictions Prediction[]
+  goalScorers GoalScorer[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Prediction {
+  id                     String      @id @default(cuid())
+  participantId          String
+  gameId                 String
+  predictedHomeScore     Int
+  predictedAwayScore     Int
+  predictedGoalScorer    String?
+  scorePoints            Int         @default(0)
+  resultPoints           Int         @default(0)
+  goalScorerPoints       Int         @default(0)
+  totalPoints            Int         @default(0)
+  participant            Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  game                   Game        @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  @@unique([participantId, gameId])
+}
+
+model GoalScorer {
+  id         String   @id @default(cuid())
+  gameId     String
+  playerName String
+  teamName    String?
+  game       Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+}
+
+model SpecialPrediction {
+  id                String      @id @default(cuid())
+  participantId     String      @unique
+  championTeam      String
+  topScorerPlayer   String
+  championPoints    Int         @default(0)
+  topScorerPoints   Int         @default(0)
+  totalPoints       Int         @default(0)
+  participant       Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Settings {
+  id                       String   @id @default(cuid())
+  poolName                 String   @default("Bolão da Copa dos Amigos")
+  entryFee                 Decimal  @default(50)
+  pixKey                   String   @default("")
+  pixReceiverName          String   @default("")
+  organizerWhatsapp        String   @default("")
+  organizerPercentage      Decimal  @default(20)
+  firstPlacePercentage     Decimal  @default(40)
+  secondPlacePercentage    Decimal  @default(25)
+  thirdPlacePercentage     Decimal  @default(15)
+  specialPredictionsLocked Boolean  @default(false)
+  officialChampion         String?
+  officialTopScorers       String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+}
