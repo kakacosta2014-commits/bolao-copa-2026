@@ -219,6 +219,69 @@ th {
   font-size: 0.9rem;
 }
 
+.participant-header,
+.section-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.participant-header h1,
+.section-heading h2 {
+  margin: 0;
+}
+
+.participant-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.special-summary,
+.participant-prediction-summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.special-summary > div,
+.participant-prediction-summary > div {
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
+.participant-game-card {
+  box-shadow: none;
+}
+
+.participant-game-header {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.participant-game-header > div {
+  min-width: min(100%, 280px);
+}
+
+.participant-edit-button {
+  justify-self: flex-start;
+}
+
+.participant-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .predictions-filters {
   display: grid;
   gap: 1rem;
@@ -415,6 +478,14 @@ th {
   .filter-actions,
   .filter-actions .button,
   .filter-actions button {
+    width: 100%;
+  }
+
+  .participant-nav,
+  .participant-nav .button,
+  .participant-form-actions,
+  .participant-form-actions button,
+  .section-heading .button {
     width: 100%;
   }
 }
