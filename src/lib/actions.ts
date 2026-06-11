@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { join } from "path";
 import { createAdminSession, clearAdminSession, requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
-import { withMessage } from "@/lib/messages";
+import { withMessage, withSystemMessage } from "@/lib/messages";
 import { calculateGamePredictionPoints } from "@/lib/scoring";
 import { getSettings } from "@/lib/settings";
 import { recalculateGame, recalculateSpecials } from "@/lib/recalculate";
@@ -165,6 +165,38 @@ export async function setParticipantPaid(formData: FormData) {
   revalidatePath("/admin/participantes");
   revalidatePath("/ranking");
   redirect(withMessage("/admin/participantes", "ok", paid ? "Pagamento confirmado." : "Confirmacao de pagamento removida."));
+}
+
+export async function deleteParticipantAction(formData: FormData) {
+  await requireAdmin();
+  const id = text(formData, "participantId");
+
+  const participant = await prisma.participant.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      paid: true,
+      _count: { select: { predictions: true } },
+      specialPrediction: { select: { id: true } }
+    }
+  });
+
+  if (!participant) {
+    redirect(withSystemMessage("/admin/participantes", "error", "participantNotFound"));
+  }
+
+  if (participant.paid) {
+    redirect(withSystemMessage("/admin/participantes", "error", "participantDeleteBlockedPaid"));
+  }
+
+  if (participant._count.predictions > 0 || participant.specialPrediction) {
+    redirect(withSystemMessage("/admin/participantes", "error", "participantDeleteBlockedPredictions"));
+  }
+
+  await prisma.participant.delete({ where: { id } });
+  revalidatePath("/admin/participantes");
+  revalidatePath("/ranking");
+  redirect(withSystemMessage("/admin/participantes", "success", "participantDeleted"));
 }
 
 export async function upsertGame(formData: FormData) {

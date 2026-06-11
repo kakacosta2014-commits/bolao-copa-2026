@@ -65,6 +65,12 @@ button.danger {
   background: #b42318;
 }
 
+button.subtle-danger {
+  background: #fff1f0;
+  border: 1px solid #f0a29b;
+  color: #8a1f16;
+}
+
 .container {
   width: min(1120px, calc(100% - 2rem));
   margin: 0 auto;
@@ -123,4 +129,94 @@ th {
 .stack {
   display: grid;
   gap: 1rem;
+}
+
+.participants-table {
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.participants-table th:nth-child(1),
+.participants-table td:nth-child(1) {
+  width: 24%;
+}
+
+.participants-table th:nth-child(2),
+.participants-table td:nth-child(2) {
+  width: 18%;
+}
+
+.participants-table th:nth-child(3),
+.participants-table td:nth-child(3) {
+  width: 12%;
+}
+
+.participants-table th:nth-child(4),
+.participants-table td:nth-child(4) {
+  width: 18%;
+}
+
+.participants-table th:nth-child(5),
+.participants-table td:nth-child(5) {
+  width: 28%;
+}
+
+.participants-table td {
+  overflow-wrap: anywhere;
+}
+
+.participant-actions {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.participant-actions form {
+  margin: 0;
+}
+
+.participant-actions button {
+  white-space: normal;
+}
+
+.participants-mobile {
+  display: none;
+}
+
+.participant-card {
+  box-shadow: none;
+}
+
+.participant-card > div:not(.participant-actions) {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.participant-card strong {
+  overflow-wrap: anywhere;
+}
+
+.compact-text {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 760px) {
+  .participants-desktop {
+    display: none;
+  }
+
+  .participants-mobile {
+    display: grid;
+  }
+
+  .participant-actions {
+    display: grid;
+  }
+
+  .participant-actions form,
+  .participant-actions button {
+    width: 100%;
+  }
 }
