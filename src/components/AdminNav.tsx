@@ -8,6 +8,7 @@ export function AdminNav() {
       <Link href="/admin/participantes">Participantes</Link>
       <Link href="/admin/jogos">Jogos</Link>
       <Link href="/admin/resultados">Resultados</Link>
+      <Link href="/admin/palpites">Palpites</Link>
       <Link href="/admin/especiais">Especiais</Link>
       <Link href="/admin/configuracoes">Configuracoes</Link>
       <form action={logoutAdmin} style={{ marginLeft: "auto" }}>
