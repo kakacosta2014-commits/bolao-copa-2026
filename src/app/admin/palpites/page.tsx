@@ -3,6 +3,7 @@ import { AdminNav } from "@/components/AdminNav";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
+import { hasMultipleGoalScorers } from "@/lib/goalScorer";
 
 export const dynamic = "force-dynamic";
 
@@ -218,6 +219,7 @@ export default async function AdminPredictionsPage({
               {predictions.map((prediction) => {
                 const payment = getPaymentStatus(prediction.participant.paid);
                 const timing = getGameTiming(prediction.game);
+                const suspiciousGoalScorer = hasMultipleGoalScorers(prediction.predictedGoalScorer);
 
                 return (
                   <tr key={prediction.id}>
@@ -238,7 +240,10 @@ export default async function AdminPredictionsPage({
                       <span className="muted table-detail">{prediction.game.status}</span>
                     </td>
                     <td>{prediction.predictedHomeScore} x {prediction.predictedAwayScore}</td>
-                    <td>{prediction.predictedGoalScorer ?? "-"}</td>
+                    <td>
+                      <span>{prediction.predictedGoalScorer ?? "-"}</span>
+                      {suspiciousGoalScorer ? <span className="status-pill status-warning table-detail">Verificar jogador-gol</span> : null}
+                    </td>
                     <td>
                       <strong>{prediction.totalPoints}</strong>
                       <span className="muted table-detail">
@@ -261,6 +266,7 @@ export default async function AdminPredictionsPage({
           {predictions.map((prediction) => {
             const payment = getPaymentStatus(prediction.participant.paid);
             const timing = getGameTiming(prediction.game);
+            const suspiciousGoalScorer = hasMultipleGoalScorers(prediction.predictedGoalScorer);
 
             return (
               <article key={prediction.id} className="card prediction-card">
@@ -291,6 +297,7 @@ export default async function AdminPredictionsPage({
                   <div>
                     <span className="muted">Jogador-gol</span>
                     <strong>{prediction.predictedGoalScorer ?? "-"}</strong>
+                    {suspiciousGoalScorer ? <span className="status-pill status-warning">Verificar jogador-gol</span> : null}
                   </div>
                   <div>
                     <span className="muted">Placar</span>

@@ -71,8 +71,19 @@ export default async function ParticipantPage({
             <input name="predictedAwayScore" type="number" min="0" defaultValue={prediction?.predictedAwayScore ?? 0} disabled={!open} required />
           </label>
           <label>
-            Jogador que marcará gol
-            <input name="predictedGoalScorer" defaultValue={prediction?.predictedGoalScorer ?? ""} disabled={!open} />
+            Escolha 1 jogador para marcar gol
+            <input
+              name="predictedGoalScorer"
+              defaultValue={prediction?.predictedGoalScorer ?? ""}
+              disabled={!open}
+              placeholder="Ex: Vini Jr"
+            />
+            <span className="muted field-help">
+              Digite apenas um nome. Se esse jogador fizer gol em qualquer momento da partida, você ganha 5 pontos.
+            </span>
+            <span className="warning-text">
+              Não coloque vários jogadores. Só será aceito um jogador por jogo.
+            </span>
           </label>
         </div>
         {prediction ? (

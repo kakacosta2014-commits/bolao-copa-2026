@@ -8,6 +8,7 @@ import { redirect } from "next/navigation";
 import { join } from "path";
 import { createAdminSession, clearAdminSession, requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { hasMultipleGoalScorers } from "@/lib/goalScorer";
 import { withMessage, withSystemMessage } from "@/lib/messages";
 import { calculateGamePredictionPoints } from "@/lib/scoring";
 import { getSettings } from "@/lib/settings";
@@ -294,10 +295,15 @@ export async function savePrediction(formData: FormData) {
     redirect(withMessage(participantPath, "erro", "Palpites encerrados para este jogo."));
   }
 
+  const predictedGoalScorer = optionalText(formData, "predictedGoalScorer");
+  if (hasMultipleGoalScorers(predictedGoalScorer)) {
+    redirect(withMessage(participantPath, "erro", "Escolha apenas 1 jogador para marcar gol neste jogo."));
+  }
+
   const points = calculateGamePredictionPoints({
     predictedHomeScore: int(formData, "predictedHomeScore"),
     predictedAwayScore: int(formData, "predictedAwayScore"),
-    predictedGoalScorer: optionalText(formData, "predictedGoalScorer"),
+    predictedGoalScorer,
     homeScore: game.homeScore,
     awayScore: game.awayScore,
     goalScorers: game.goalScorers.map((scorer) => scorer.playerName)
@@ -310,13 +316,13 @@ export async function savePrediction(formData: FormData) {
       gameId,
       predictedHomeScore: int(formData, "predictedHomeScore"),
       predictedAwayScore: int(formData, "predictedAwayScore"),
-      predictedGoalScorer: optionalText(formData, "predictedGoalScorer"),
+      predictedGoalScorer,
       ...points
     },
     update: {
       predictedHomeScore: int(formData, "predictedHomeScore"),
       predictedAwayScore: int(formData, "predictedAwayScore"),
-      predictedGoalScorer: optionalText(formData, "predictedGoalScorer"),
+      predictedGoalScorer,
       ...points
     }
   });
