@@ -5,6 +5,7 @@ import { StatCard } from "@/components/StatCard";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
+import { getTodayRange } from "@/lib/games";
 import { getRankingData } from "@/lib/ranking";
 
 export const dynamic = "force-dynamic";
@@ -16,11 +17,22 @@ export default async function AdminDashboardPage({
 }) {
   await requireAdmin();
   const { ok, erro } = await searchParams;
-  const [participants, paid, games, finishedGames, { prizes }] = await Promise.all([
+  const today = getTodayRange();
+  const [participants, paid, games, finishedGames, todayGames, { prizes }] = await Promise.all([
     prisma.participant.count(),
     prisma.participant.count({ where: { paid: true } }),
     prisma.game.count(),
     prisma.game.count({ where: { homeScore: { not: null }, awayScore: { not: null } } }),
+    prisma.game.findMany({
+      where: {
+        startsAt: {
+          gte: today.start,
+          lt: today.end
+        }
+      },
+      orderBy: { startsAt: "asc" },
+      include: { _count: { select: { predictions: true } } }
+    }),
     getRankingData()
   ]);
 
@@ -47,6 +59,55 @@ export default async function AdminDashboardPage({
         <Link className="button" href="/admin/resultados">Lancar resultados</Link>
         <Link className="button" href="/admin/especiais">Palpites especiais</Link>
       </div>
+      <section className="card stack">
+        <h2>Jogos de hoje</h2>
+        <p className="muted">Horários exibidos em horário de Brasília.</p>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Jogo</th>
+                <th>Fase</th>
+                <th>Grupo</th>
+                <th>Horário</th>
+                <th>Status</th>
+                <th>Palpites</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {todayGames.map((game) => (
+                <tr key={game.id}>
+                  <td>{game.number}</td>
+                  <td>{game.homeTeam} x {game.awayTeam}</td>
+                  <td>{game.stage}</td>
+                  <td>{game.groupName ?? "-"}</td>
+                  <td>{new Intl.DateTimeFormat("pt-BR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "America/Sao_Paulo"
+                  }).format(game.startsAt).replace(",", "")}</td>
+                  <td>{game.status}</td>
+                  <td>{game._count.predictions}</td>
+                  <td>
+                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                      <Link className="button secondary" href="/admin/jogos">Editar jogo</Link>
+                      {game.status !== "CANCELADO" ? (
+                        <Link className="button" href="/admin/resultados">Lançar resultado</Link>
+                      ) : null}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {todayGames.length === 0 ? <p className="muted">Nenhum jogo cadastrado para hoje.</p> : null}
+      </section>
     </main>
   );
 }

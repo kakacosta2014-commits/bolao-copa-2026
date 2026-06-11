@@ -31,6 +31,7 @@ export default async function HomePage({
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <Link className="button" href="/entrar">Participar do Bolao</Link>
             <Link className="button secondary" href="/ranking">Ver Ranking</Link>
+            <Link className="button secondary" href="/jogos">Ver jogos</Link>
             <ResumeAccess />
           </div>
         </div>

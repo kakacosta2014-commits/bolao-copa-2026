@@ -1,0 +1,105 @@
+numero;fase;grupo;timeCasa;timeVisitante;dataHora
+1;Fase de Grupos;A;México;África do Sul;2026-06-11T16:00:00-03:00
+2;Fase de Grupos;A;Coreia do Sul;Tchéquia;2026-06-11T23:00:00-03:00
+3;Fase de Grupos;B;Canadá;Bósnia e Herzegovina;2026-06-12T16:00:00-03:00
+4;Fase de Grupos;D;Estados Unidos;Paraguai;2026-06-12T22:00:00-03:00
+5;Fase de Grupos;C;Haiti;Escócia;2026-06-13T22:00:00-03:00
+6;Fase de Grupos;D;Austrália;Turquia;2026-06-14T01:00:00-03:00
+7;Fase de Grupos;C;Brasil;Marrocos;2026-06-13T19:00:00-03:00
+8;Fase de Grupos;B;Catar;Suíça;2026-06-13T16:00:00-03:00
+9;Fase de Grupos;E;Costa do Marfim;Equador;2026-06-14T20:00:00-03:00
+10;Fase de Grupos;E;Alemanha;Curaçao;2026-06-14T14:00:00-03:00
+11;Fase de Grupos;F;Países Baixos;Japão;2026-06-14T17:00:00-03:00
+12;Fase de Grupos;F;Suécia;Tunísia;2026-06-14T23:00:00-03:00
+13;Fase de Grupos;H;Arábia Saudita;Uruguai;2026-06-15T19:00:00-03:00
+14;Fase de Grupos;H;Espanha;Cabo Verde;2026-06-15T13:00:00-03:00
+15;Fase de Grupos;G;Irã;Nova Zelândia;2026-06-15T22:00:00-03:00
+16;Fase de Grupos;G;Bélgica;Egito;2026-06-15T16:00:00-03:00
+17;Fase de Grupos;I;França;Senegal;2026-06-16T16:00:00-03:00
+18;Fase de Grupos;I;Iraque;Noruega;2026-06-16T19:00:00-03:00
+19;Fase de Grupos;J;Argentina;Argélia;2026-06-16T22:00:00-03:00
+20;Fase de Grupos;J;Áustria;Jordânia;2026-06-17T01:00:00-03:00
+21;Fase de Grupos;L;Gana;Panamá;2026-06-17T20:00:00-03:00
+22;Fase de Grupos;L;Inglaterra;Croácia;2026-06-17T17:00:00-03:00
+23;Fase de Grupos;K;Portugal;RD Congo;2026-06-17T14:00:00-03:00
+24;Fase de Grupos;K;Uzbequistão;Colômbia;2026-06-17T23:00:00-03:00
+25;Fase de Grupos;A;Tchéquia;África do Sul;2026-06-18T13:00:00-03:00
+26;Fase de Grupos;B;Suíça;Bósnia e Herzegovina;2026-06-18T16:00:00-03:00
+27;Fase de Grupos;B;Canadá;Catar;2026-06-18T19:00:00-03:00
+28;Fase de Grupos;A;México;Coreia do Sul;2026-06-18T22:00:00-03:00
+29;Fase de Grupos;C;Brasil;Haiti;2026-06-19T21:30:00-03:00
+30;Fase de Grupos;C;Escócia;Marrocos;2026-06-19T19:00:00-03:00
+31;Fase de Grupos;D;Turquia;Paraguai;2026-06-20T00:00:00-03:00
+32;Fase de Grupos;D;Estados Unidos;Austrália;2026-06-19T16:00:00-03:00
+33;Fase de Grupos;E;Alemanha;Costa do Marfim;2026-06-20T17:00:00-03:00
+34;Fase de Grupos;E;Equador;Curaçao;2026-06-20T21:00:00-03:00
+35;Fase de Grupos;F;Países Baixos;Suécia;2026-06-20T14:00:00-03:00
+36;Fase de Grupos;F;Tunísia;Japão;2026-06-21T01:00:00-03:00
+37;Fase de Grupos;H;Uruguai;Cabo Verde;2026-06-21T19:00:00-03:00
+38;Fase de Grupos;H;Espanha;Arábia Saudita;2026-06-21T13:00:00-03:00
+39;Fase de Grupos;G;Bélgica;Irã;2026-06-21T16:00:00-03:00
+40;Fase de Grupos;G;Nova Zelândia;Egito;2026-06-21T22:00:00-03:00
+41;Fase de Grupos;I;Noruega;Senegal;2026-06-22T21:00:00-03:00
+42;Fase de Grupos;I;França;Iraque;2026-06-22T18:00:00-03:00
+43;Fase de Grupos;J;Argentina;Áustria;2026-06-22T14:00:00-03:00
+44;Fase de Grupos;J;Jordânia;Argélia;2026-06-23T00:00:00-03:00
+45;Fase de Grupos;L;Inglaterra;Gana;2026-06-23T17:00:00-03:00
+46;Fase de Grupos;L;Panamá;Croácia;2026-06-23T20:00:00-03:00
+47;Fase de Grupos;K;Portugal;Uzbequistão;2026-06-23T14:00:00-03:00
+48;Fase de Grupos;K;Colômbia;RD Congo;2026-06-23T23:00:00-03:00
+49;Fase de Grupos;C;Escócia;Brasil;2026-06-24T19:00:00-03:00
+50;Fase de Grupos;C;Marrocos;Haiti;2026-06-24T19:00:00-03:00
+51;Fase de Grupos;B;Suíça;Canadá;2026-06-24T16:00:00-03:00
+52;Fase de Grupos;B;Bósnia e Herzegovina;Catar;2026-06-24T16:00:00-03:00
+53;Fase de Grupos;A;Tchéquia;México;2026-06-24T22:00:00-03:00
+54;Fase de Grupos;A;África do Sul;Coreia do Sul;2026-06-24T22:00:00-03:00
+55;Fase de Grupos;E;Curaçao;Costa do Marfim;2026-06-25T17:00:00-03:00
+56;Fase de Grupos;E;Equador;Alemanha;2026-06-25T17:00:00-03:00
+57;Fase de Grupos;F;Japão;Suécia;2026-06-25T20:00:00-03:00
+58;Fase de Grupos;F;Tunísia;Países Baixos;2026-06-25T20:00:00-03:00
+59;Fase de Grupos;D;Turquia;Estados Unidos;2026-06-25T23:00:00-03:00
+60;Fase de Grupos;D;Paraguai;Austrália;2026-06-25T23:00:00-03:00
+61;Fase de Grupos;I;Noruega;França;2026-06-26T16:00:00-03:00
+62;Fase de Grupos;I;Senegal;Iraque;2026-06-26T16:00:00-03:00
+63;Fase de Grupos;G;Egito;Irã;2026-06-27T00:00:00-03:00
+64;Fase de Grupos;G;Nova Zelândia;Bélgica;2026-06-27T00:00:00-03:00
+65;Fase de Grupos;H;Cabo Verde;Arábia Saudita;2026-06-26T21:00:00-03:00
+66;Fase de Grupos;H;Uruguai;Espanha;2026-06-26T21:00:00-03:00
+67;Fase de Grupos;L;Panamá;Inglaterra;2026-06-27T18:00:00-03:00
+68;Fase de Grupos;L;Croácia;Gana;2026-06-27T18:00:00-03:00
+69;Fase de Grupos;J;Argélia;Áustria;2026-06-27T23:00:00-03:00
+70;Fase de Grupos;J;Jordânia;Argentina;2026-06-27T23:00:00-03:00
+71;Fase de Grupos;K;Colômbia;Portugal;2026-06-27T20:30:00-03:00
+72;Fase de Grupos;K;RD Congo;Uzbequistão;2026-06-27T20:30:00-03:00
+73;Fase de 32;;2º Grupo A;2º Grupo B;2026-06-28T16:00:00-03:00
+74;Fase de 32;;1º Grupo E;3º Grupo A/B/C/D/F;2026-06-29T17:30:00-03:00
+75;Fase de 32;;1º Grupo F;2º Grupo C;2026-06-29T22:00:00-03:00
+76;Fase de 32;;1º Grupo C;2º Grupo F;2026-06-29T14:00:00-03:00
+77;Fase de 32;;1º Grupo I;3º Grupo C/D/F/G/H;2026-06-30T18:00:00-03:00
+78;Fase de 32;;2º Grupo E;2º Grupo I;2026-06-30T14:00:00-03:00
+79;Fase de 32;;1º Grupo A;3º Grupo C/E/F/H/I;2026-06-30T22:00:00-03:00
+80;Fase de 32;;1º Grupo L;3º Grupo E/H/I/J/K;2026-07-01T13:00:00-03:00
+81;Fase de 32;;1º Grupo D;3º Grupo B/E/F/I/J;2026-07-01T21:00:00-03:00
+82;Fase de 32;;1º Grupo G;3º Grupo A/E/H/I/J;2026-07-01T17:00:00-03:00
+83;Fase de 32;;2º Grupo K;2º Grupo L;2026-07-02T20:00:00-03:00
+84;Fase de 32;;1º Grupo H;2º Grupo J;2026-07-02T16:00:00-03:00
+85;Fase de 32;;1º Grupo B;3º Grupo E/F/G/I/J;2026-07-03T00:00:00-03:00
+86;Fase de 32;;1º Grupo J;2º Grupo H;2026-07-03T19:00:00-03:00
+87;Fase de 32;;1º Grupo K;3º Grupo D/E/I/J/L;2026-07-03T22:30:00-03:00
+88;Fase de 32;;2º Grupo D;2º Grupo G;2026-07-03T15:00:00-03:00
+89;Oitavas de Final;;Vencedor Jogo 74;Vencedor Jogo 77;2026-07-04T18:00:00-03:00
+90;Oitavas de Final;;Vencedor Jogo 73;Vencedor Jogo 75;2026-07-04T14:00:00-03:00
+91;Oitavas de Final;;Vencedor Jogo 76;Vencedor Jogo 78;2026-07-05T17:00:00-03:00
+92;Oitavas de Final;;Vencedor Jogo 79;Vencedor Jogo 80;2026-07-05T21:00:00-03:00
+93;Oitavas de Final;;Vencedor Jogo 83;Vencedor Jogo 84;2026-07-06T16:00:00-03:00
+94;Oitavas de Final;;Vencedor Jogo 81;Vencedor Jogo 82;2026-07-06T21:00:00-03:00
+95;Oitavas de Final;;Vencedor Jogo 86;Vencedor Jogo 88;2026-07-07T13:00:00-03:00
+96;Oitavas de Final;;Vencedor Jogo 85;Vencedor Jogo 87;2026-07-07T17:00:00-03:00
+97;Quartas de Final;;Vencedor Jogo 89;Vencedor Jogo 90;2026-07-09T17:00:00-03:00
+98;Quartas de Final;;Vencedor Jogo 93;Vencedor Jogo 94;2026-07-10T16:00:00-03:00
+99;Quartas de Final;;Vencedor Jogo 91;Vencedor Jogo 92;2026-07-11T18:00:00-03:00
+100;Quartas de Final;;Vencedor Jogo 95;Vencedor Jogo 96;2026-07-11T22:00:00-03:00
+101;Semifinal;;Vencedor Jogo 97;Vencedor Jogo 98;2026-07-14T16:00:00-03:00
+102;Semifinal;;Vencedor Jogo 99;Vencedor Jogo 100;2026-07-15T16:00:00-03:00
+103;Disputa de 3º Lugar;;Perdedor Jogo 101;Perdedor Jogo 102;2026-07-18T18:00:00-03:00
+104;Final;;Vencedor Jogo 101;Vencedor Jogo 102;2026-07-19T16:00:00-03:00

@@ -2,8 +2,10 @@
 
 import { GameStatus } from "@prisma/client";
 import { randomBytes } from "crypto";
+import { readFile } from "fs/promises";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { join } from "path";
 import { createAdminSession, clearAdminSession, requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { withMessage } from "@/lib/messages";
@@ -24,6 +26,92 @@ function int(formData: FormData, key: string) {
 function optionalText(formData: FormData, key: string) {
   const value = text(formData, key);
   return value || null;
+}
+
+type GameImportRow = {
+  number: number;
+  stage: string;
+  groupName: string | null;
+  homeTeam: string;
+  awayTeam: string;
+  startsAt: Date;
+};
+
+const gamesCsvHeader = "numero;fase;grupo;timeCasa;timeVisitante;dataHora";
+
+function parseGamesCsv(csv: string) {
+  const errors: string[] = [];
+  const rows: GameImportRow[] = [];
+
+  csv.split(/\r?\n/).forEach((rawLine, index) => {
+    const line = rawLine.trim();
+    if (!line) return;
+    if (index === 0 && line.toLowerCase() === gamesCsvHeader.toLowerCase()) return;
+
+    const columns = line.split(";");
+    const [number, stage, groupName, homeTeam, awayTeam, startsAt] = columns;
+    const parsedNumber = Number(number);
+    const parsedDate = new Date(startsAt ?? "");
+
+    if (
+      columns.length !== 6 ||
+      !Number.isInteger(parsedNumber) ||
+      parsedNumber <= 0 ||
+      !stage?.trim() ||
+      !homeTeam?.trim() ||
+      !awayTeam?.trim() ||
+      Number.isNaN(parsedDate.getTime())
+    ) {
+      errors.push(`Linha ${index + 1}: formato invalido.`);
+      return;
+    }
+
+    rows.push({
+      number: parsedNumber,
+      stage: stage.trim(),
+      groupName: groupName?.trim() || null,
+      homeTeam: homeTeam.trim(),
+      awayTeam: awayTeam.trim(),
+      startsAt: parsedDate
+    });
+  });
+
+  return { rows, errors };
+}
+
+async function importGameRows(rows: GameImportRow[]) {
+  let created = 0;
+  let updated = 0;
+
+  for (const row of rows) {
+    const existing = await prisma.game.findUnique({
+      where: { number: row.number },
+      select: { homeScore: true, awayScore: true, status: true }
+    });
+
+    if (!existing) {
+      await prisma.game.create({
+        data: {
+          ...row,
+          status: "AGENDADO"
+        }
+      });
+      created += 1;
+      continue;
+    }
+
+    const hasResult = existing.homeScore !== null || existing.awayScore !== null;
+    await prisma.game.update({
+      where: { number: row.number },
+      data: {
+        ...row,
+        status: hasResult ? existing.status : "AGENDADO"
+      }
+    });
+    updated += 1;
+  }
+
+  return { created, updated };
 }
 
 export async function registerParticipant(formData: FormData) {
@@ -121,79 +209,40 @@ export async function deleteGame(formData: FormData) {
 
 export async function importGames(formData: FormData) {
   await requireAdmin();
-  const lines = text(formData, "csv")
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+  const csv = text(formData, "csv");
+  const { rows, errors } = parseGamesCsv(csv);
 
-  if (lines.length === 0) {
+  if (rows.length === 0 && errors.length === 0) {
     redirect(withMessage("/admin/jogos", "erro", "Cole ao menos uma linha para importar."));
   }
-
-  const errors: string[] = [];
-  const validRows: Array<{
-    number: number;
-    stage: string;
-    groupName: string | null;
-    homeTeam: string;
-    awayTeam: string;
-    startsAt: Date;
-  }> = [];
-
-  lines.forEach((line, index) => {
-    const [number, stage, groupName, homeTeam, awayTeam, startsAt] = line.split(";");
-    const parsedNumber = Number(number);
-    const parsedDate = new Date(startsAt ?? "");
-
-    if (
-      line.split(";").length !== 6 ||
-      !Number.isInteger(parsedNumber) ||
-      !stage?.trim() ||
-      !homeTeam?.trim() ||
-      !awayTeam?.trim() ||
-      Number.isNaN(parsedDate.getTime())
-    ) {
-      errors.push(`Linha ${index + 1}: formato invalido.`);
-      return;
-    }
-
-    validRows.push({
-      number: parsedNumber,
-      stage: stage.trim(),
-      groupName: groupName?.trim() || null,
-      homeTeam: homeTeam.trim(),
-      awayTeam: awayTeam.trim(),
-      startsAt: parsedDate
-    });
-  });
 
   if (errors.length > 0) {
     redirect(withMessage("/admin/jogos", "erro", errors.join(" ")));
   }
 
-  for (const row of validRows) {
-    await prisma.game.upsert({
-      where: { number: row.number },
-      create: {
-        number: row.number,
-        stage: row.stage,
-        groupName: row.groupName,
-        homeTeam: row.homeTeam,
-        awayTeam: row.awayTeam,
-        startsAt: row.startsAt
-      },
-      update: {
-        stage: row.stage,
-        groupName: row.groupName,
-        homeTeam: row.homeTeam,
-        awayTeam: row.awayTeam,
-        startsAt: row.startsAt
-      }
-    });
-  }
+  const result = await importGameRows(rows);
 
   revalidatePath("/admin/jogos");
-  redirect(withMessage("/admin/jogos", "ok", `Importacao concluida: ${validRows.length} jogo(s) importado(s) ou atualizado(s).`));
+  redirect(withMessage("/admin/jogos", "ok", `Importacao concluida. Criados: ${result.created}. Atualizados: ${result.updated}.`));
+}
+
+export async function importDefaultGames() {
+  await requireAdmin();
+  const filePath = join(process.cwd(), "prisma", "data", "world-cup-2026-games.csv");
+  const csv = await readFile(filePath, "utf8");
+  const { rows, errors } = parseGamesCsv(csv);
+
+  if (rows.length === 0 && errors.length === 0) {
+    redirect(withMessage("/admin/jogos", "erro", "A tabela padrao ainda esta vazia. Preencha prisma/data/world-cup-2026-games.csv."));
+  }
+
+  if (errors.length > 0) {
+    redirect(withMessage("/admin/jogos", "erro", errors.join(" ")));
+  }
+
+  const result = await importGameRows(rows);
+  revalidatePath("/admin/jogos");
+  redirect(withMessage("/admin/jogos", "ok", `Tabela padrao importada. Criados: ${result.created}. Atualizados: ${result.updated}.`));
 }
 
 export async function savePrediction(formData: FormData) {
@@ -209,8 +258,8 @@ export async function savePrediction(formData: FormData) {
     include: { goalScorers: true }
   });
   if (!game) redirect(withMessage(participantPath, "erro", "Jogo nao encontrado."));
-  if (game.startsAt <= new Date()) {
-    redirect(withMessage(participantPath, "erro", "Palpite bloqueado apos o inicio do jogo."));
+  if (new Date() >= game.startsAt) {
+    redirect(withMessage(participantPath, "erro", "Palpites encerrados para este jogo."));
   }
 
   const points = calculateGamePredictionPoints({

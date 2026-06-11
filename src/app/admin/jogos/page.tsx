@@ -1,7 +1,7 @@
 import { GameStatus } from "@prisma/client";
 import { AdminNav } from "@/components/AdminNav";
 import { MessageBanner } from "@/components/MessageBanner";
-import { deleteGame, importGames, upsertGame } from "@/lib/actions";
+import { deleteGame, importDefaultGames, importGames, upsertGame } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
@@ -54,6 +54,14 @@ export default async function AdminGamesPage({
         </p>
         <textarea name="csv" rows={5} placeholder="1;Fase de Grupos;A;Brasil;Alemanha;2026-06-11T16:00:00-03:00" />
         <button type="submit">Importar CSV</button>
+      </form>
+
+      <form action={importDefaultGames} className="card stack">
+        <h2>Tabela padrao</h2>
+        <p className="muted">
+          Importa o arquivo <code>prisma/data/world-cup-2026-games.csv</code> usando o mesmo formato CSV.
+        </p>
+        <button type="submit" className="secondary">Importar tabela padrao</button>
       </form>
 
       <div className="card table-wrap">

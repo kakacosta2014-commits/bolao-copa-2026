@@ -117,7 +117,36 @@ Após o deploy:
 6. Salve um palpite teste.
 7. Verifique o ranking.
 
-### 8. Aviso importante sobre seed
+### 8. Importar jogos por CSV
+
+Para importar jogos em lote:
+
+1. Preencha o arquivo `prisma/data/world-cup-2026-games.csv`.
+2. Mantenha o cabeçalho:
+
+```txt
+numero;fase;grupo;timeCasa;timeVisitante;dataHora
+```
+
+3. Use uma linha por jogo:
+
+```txt
+1;Fase de Grupos;A;México;África do Sul;2026-06-11T16:00:00-03:00
+```
+
+4. Rode:
+
+```bash
+npm run import:games
+```
+
+O importador faz upsert pelo campo `number`, cria jogos novos como `AGENDADO`, atualiza jogos existentes sem apagar palpites e preserva o status de jogos que já têm resultado lançado.
+
+No painel `/admin/jogos`, o botão `Importar tabela padrão` roda a mesma importação usando `prisma/data/world-cup-2026-games.csv`.
+
+Para jogos de mata-mata ainda indefinidos, use nomes como `Vencedor Grupo A`, `2º Grupo B` ou `Vencedor Jogo 73`.
+
+### 9. Aviso importante sobre seed
 
 `npm run seed` é apenas para ambiente local de desenvolvimento.
 
@@ -129,7 +158,7 @@ Para rodar localmente:
 npm run seed
 ```
 
-### 9. Checklist de produção
+### 10. Checklist de produção
 
 - [ ] Projeto criado no Neon
 - [ ] `DATABASE_URL` pooled configurada
@@ -153,7 +182,7 @@ npm run seed
 - [ ] Ranking conferido
 - [ ] Link final pronto para enviar ao grupo
 
-### 10. Mensagem pronta para WhatsApp
+### 11. Mensagem pronta para WhatsApp
 
 ```txt
 Galera, está aberto o Bolão da Copa 2026.
