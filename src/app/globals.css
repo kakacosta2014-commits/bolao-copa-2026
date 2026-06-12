@@ -541,6 +541,61 @@ th {
   color: #6b5200;
 }
 
+.admin-ranking-summary,
+.ranking-filters {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.admin-ranking-summary-card {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.admin-ranking-summary-card strong {
+  font-size: 1.35rem;
+  overflow-wrap: anywhere;
+}
+
+.admin-ranking-table {
+  font-size: 0.85rem;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.admin-ranking-table th,
+.admin-ranking-table td {
+  overflow-wrap: anywhere;
+}
+
+.ranking-top-row {
+  background: #fffdf5;
+}
+
+.admin-ranking-mobile {
+  display: none;
+}
+
+.ranking-top-card {
+  border-color: #f5c542;
+}
+
+.admin-ranking-card-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.admin-ranking-card-grid > div {
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
 .inline-filter {
   align-content: end;
   display: flex;
@@ -774,6 +829,14 @@ th {
   }
 
   .disputes-mobile {
+    display: grid;
+  }
+
+  .admin-ranking-desktop {
+    display: none;
+  }
+
+  .admin-ranking-mobile {
     display: grid;
   }
 

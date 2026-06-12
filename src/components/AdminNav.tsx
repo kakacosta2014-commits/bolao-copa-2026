@@ -9,6 +9,7 @@ const adminLinks = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/participantes", label: "Participantes" },
   { href: "/admin/disputas", label: "Disputas" },
+  { href: "/admin/ranking", label: "Ranking" },
   { href: "/admin/palpites", label: "Palpites" },
   { href: "/admin/resultados", label: "Resultados" },
   { href: "/admin/jogos", label: "Jogos" },
