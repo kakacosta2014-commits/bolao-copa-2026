@@ -94,7 +94,7 @@ export default async function ParticipantPage({
           </p>
         </div>
         <nav className="participant-nav" aria-label="Atalhos principais">
-          <Link className="button secondary" href="/">Início</Link>
+          <Link className="button secondary" href="#faltam-fazer">Meus palpites</Link>
           <Link className="button secondary" href="/jogos">Jogos</Link>
           <Link className="button secondary" href="/ranking">Ranking</Link>
           <Link className="button secondary" href="/regras">Regras</Link>

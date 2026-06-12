@@ -219,6 +219,78 @@ th {
   font-size: 0.9rem;
 }
 
+.public-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e7ebf2;
+}
+
+.public-nav {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 0.75rem 0;
+}
+
+.public-brand {
+  font-weight: 900;
+}
+
+.public-links {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-weight: 800;
+}
+
+.public-admin-link {
+  color: #607086;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.admin-nav {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-nav-top {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.admin-menu-button {
+  display: none;
+}
+
+.admin-nav-links {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-nav-links a {
+  border-radius: 8px;
+  color: #34445a;
+  font-weight: 800;
+  padding: 0.65rem 0.75rem;
+}
+
+.admin-nav-links a.active {
+  background: #effaf3;
+  color: #075f35;
+}
+
+.admin-nav-links form {
+  margin-left: auto;
+}
+
 .participant-header,
 .section-heading {
   align-items: center;
@@ -489,6 +561,47 @@ th {
 }
 
 @media (max-width: 760px) {
+  .public-nav {
+    align-items: flex-start;
+    display: grid;
+  }
+
+  .public-links {
+    width: 100%;
+  }
+
+  .public-links a {
+    padding: 0.35rem 0;
+  }
+
+  .admin-menu-button {
+    display: inline-flex;
+  }
+
+  .admin-nav-links {
+    display: none;
+  }
+
+  .admin-nav-links.is-open {
+    display: grid;
+    width: 100%;
+  }
+
+  .admin-nav-links a,
+  .admin-nav-links form,
+  .admin-nav-links button {
+    width: 100%;
+  }
+
+  .admin-nav-links a {
+    background: #f8fafc;
+    border: 1px solid #e7ebf2;
+  }
+
+  .admin-nav-links form {
+    margin-left: 0;
+  }
+
   .participants-desktop {
     display: none;
   }
