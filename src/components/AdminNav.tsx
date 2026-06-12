@@ -8,6 +8,7 @@ import { logoutAdmin } from "@/lib/actions";
 const adminLinks = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/participantes", label: "Participantes" },
+  { href: "/admin/disputas", label: "Disputas" },
   { href: "/admin/palpites", label: "Palpites" },
   { href: "/admin/resultados", label: "Resultados" },
   { href: "/admin/jogos", label: "Jogos" },

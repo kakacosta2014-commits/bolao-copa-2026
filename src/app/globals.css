@@ -424,6 +424,69 @@ th {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.dispute-summary-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.dispute-card {
+  box-shadow: none;
+}
+
+.dispute-metrics,
+.prize-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+}
+
+.dispute-metrics > div,
+.prize-grid > div {
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
+.dispute-metrics strong,
+.prize-grid strong {
+  overflow-wrap: anywhere;
+}
+
+.disputes-table {
+  font-size: 0.85rem;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.disputes-table th,
+.disputes-table td {
+  overflow-wrap: anywhere;
+}
+
+.disputes-mobile {
+  display: none;
+}
+
+.participant-dispute-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.participant-dispute-row {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: minmax(160px, 1fr) auto minmax(160px, auto);
+  padding: 0.75rem;
+}
+
 .inline-filter {
   align-content: end;
   display: flex;
@@ -650,6 +713,19 @@ th {
 
   .predictions-mobile {
     display: grid;
+  }
+
+  .disputes-desktop {
+    display: none;
+  }
+
+  .disputes-mobile {
+    display: grid;
+  }
+
+  .participant-dispute-row {
+    align-items: flex-start;
+    grid-template-columns: 1fr;
   }
 
   .filter-actions,
