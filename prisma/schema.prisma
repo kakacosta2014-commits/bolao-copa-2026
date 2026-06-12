@@ -23,6 +23,7 @@ model Participant {
   paid               Boolean            @default(false)
   paidAt             DateTime?
   predictions        Prediction[]
+  disputes           ParticipantDispute[]
   specialPrediction  SpecialPrediction?
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
@@ -40,9 +41,52 @@ model Game {
   homeScore   Int?
   awayScore   Int?
   predictions Prediction[]
+  disputes    DisputeGame[]
   goalScorers GoalScorer[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+model Dispute {
+  id                         String               @id @default(cuid())
+  name                       String
+  slug                       String               @unique
+  description                String?
+  entryFeeCents              Int                  @default(5000)
+  kind                       String
+  isActive                   Boolean              @default(true)
+  includesSpecialPredictions Boolean              @default(false)
+  games                      DisputeGame[]
+  participants               ParticipantDispute[]
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @updatedAt
+}
+
+model DisputeGame {
+  id        String   @id @default(cuid())
+  disputeId String
+  gameId    String
+  dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([disputeId, gameId])
+  @@index([gameId])
+}
+
+model ParticipantDispute {
+  id            String      @id @default(cuid())
+  participantId String
+  disputeId     String
+  paymentStatus String      @default("PENDING")
+  paidAt        DateTime?
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  dispute       Dispute     @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([participantId, disputeId])
+  @@index([disputeId])
 }
 
 model Prediction {

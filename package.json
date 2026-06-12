@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "seed": "prisma db seed",
-    "import:games": "node prisma/import-games.js"
+    "import:games": "node prisma/import-games.js",
+    "init:disputes": "node prisma/init-disputes.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
