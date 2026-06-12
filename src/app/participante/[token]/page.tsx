@@ -33,17 +33,24 @@ export default async function ParticipantPage({
   if (!participant) notFound();
 
   const participantData = participant;
+  const predictionByGameId = new Map(participantData.predictions.map((prediction) => [prediction.gameId, prediction]));
   const totalPoints =
     participantData.predictions.reduce((sum, prediction) => sum + prediction.totalPoints, 0) +
     (participantData.specialPrediction?.totalPoints ?? 0);
   const whatsappMessage = `Ola, fiz o PIX do Bolao da Copa. Meu nome e ${participantData.name}. Segue o comprovante.`;
   const whatsappLink = buildWhatsAppLink(settings.organizerWhatsapp, whatsappMessage);
-  const todayGames = games.filter((game) => isGameToday(game.startsAt));
-  const upcomingGames = games.filter((game) => !isGameToday(game.startsAt) && canPredict(game.startsAt));
-  const lockedGames = games.filter((game) => !isGameToday(game.startsAt) && !canPredict(game.startsAt));
+
+  const openGames = games.filter((game) => canPredict(game.startsAt));
+  const blockedGames = games.filter((game) => !canPredict(game.startsAt));
+  const pendingGames = openGames.filter((game) => !predictionByGameId.has(game.id));
+  const pendingTodayGames = pendingGames.filter((game) => isGameToday(game.startsAt));
+  const pendingOtherGames = pendingGames.filter((game) => !isGameToday(game.startsAt));
+  const editablePredictedGames = openGames.filter((game) => predictionByGameId.has(game.id));
+  const blockedWithoutPrediction = blockedGames.filter((game) => !predictionByGameId.has(game.id));
+  const progressPercent = games.length > 0 ? Math.round((participantData.predictions.length / games.length) * 100) : 0;
 
   function renderPredictionCard(game: (typeof games)[number], highlight = false) {
-    const prediction = participantData.predictions.find((item) => item.gameId === game.id);
+    const prediction = predictionByGameId.get(game.id);
 
     return (
       <ParticipantPredictionCard
@@ -86,13 +93,54 @@ export default async function ParticipantPage({
             Status: {participantData.paid ? "pagamento confirmado" : "aguardando confirmacao de pagamento"}
           </p>
         </div>
-        <nav className="participant-nav" aria-label="Atalhos do participante">
+        <nav className="participant-nav" aria-label="Atalhos principais">
           <Link className="button secondary" href="/">Início</Link>
-          <Link className="button secondary" href="/jogos">Ver jogos</Link>
-          <Link className="button secondary" href="/ranking">Ver ranking</Link>
-          <Link className="button secondary" href="/regras">Ver regras</Link>
+          <Link className="button secondary" href="/jogos">Jogos</Link>
+          <Link className="button secondary" href="/ranking">Ranking</Link>
+          <Link className="button secondary" href="/regras">Regras</Link>
         </nav>
       </div>
+
+      <section className="card stack" aria-labelledby="resumo-palpites">
+        <div className="section-heading">
+          <div>
+            <h2 id="resumo-palpites">Resumo dos palpites</h2>
+            <p className="muted compact-text">
+              Você já fez {participantData.predictions.length} de {games.length} palpites disponíveis.
+            </p>
+          </div>
+          <strong>Faltam {pendingGames.length} palpites.</strong>
+        </div>
+        <div className="progress-bar" aria-label={`Progresso dos palpites: ${progressPercent}%`}>
+          <span style={{ width: `${progressPercent}%` }} />
+        </div>
+        <div className="progress-stats">
+          <div>
+            <span className="muted">Palpites feitos</span>
+            <strong>{participantData.predictions.length}</strong>
+          </div>
+          <div>
+            <span className="muted">Faltam fazer</span>
+            <strong>{pendingGames.length}</strong>
+          </div>
+          <div>
+            <span className="muted">Bloqueados sem palpite</span>
+            <strong>{blockedWithoutPrediction.length}</strong>
+          </div>
+          <div>
+            <span className="muted">Total de jogos</span>
+            <strong>{games.length}</strong>
+          </div>
+        </div>
+        <nav className="participant-nav quick-nav" aria-label="Atalhos dos palpites">
+          <Link className="button secondary" href="#faltam-fazer">Faltam fazer</Link>
+          <Link className="button secondary" href="#ja-feitos">Já feitos</Link>
+          <Link className="button secondary" href="#bloqueados">Bloqueados</Link>
+          <Link className="button secondary" href="#todos-os-jogos">Todos os jogos</Link>
+          <Link className="button secondary" href="/ranking">Ranking</Link>
+          <Link className="button secondary" href="/regras">Regras</Link>
+        </nav>
+      </section>
 
       {!participantData.paid ? (
         <section className="card stack">
@@ -154,31 +202,54 @@ export default async function ParticipantPage({
             )}
           </section>
 
-          <section id="jogos-hoje" className="stack">
-            <h2>Jogos de hoje</h2>
-            <p className="muted">Horários exibidos em horário de Brasília.</p>
-            {todayGames.map((game) => renderPredictionCard(game, true))}
-            {todayGames.length === 0 ? <p className="muted">Nenhum jogo cadastrado para hoje.</p> : null}
-          </section>
+          <div id="todos-os-jogos" className="stack">
+            <section id="faltam-fazer" className="stack">
+              <div className="section-heading">
+                <div>
+                  <h2>Faltam fazer</h2>
+                  <p className="muted compact-text">Estes jogos ainda estão abertos e sem palpite.</p>
+                </div>
+                <Link href="#topo" className="button secondary">Voltar ao topo</Link>
+              </div>
+              {pendingTodayGames.length > 0 ? (
+                <div className="stack">
+                  <h3>Faltam fazer hoje</h3>
+                  {pendingTodayGames.map((game) => renderPredictionCard(game, true))}
+                </div>
+              ) : null}
+              {pendingOtherGames.map((game) => renderPredictionCard(game))}
+              {pendingGames.length === 0 ? (
+                <p className="card muted">Você já fez todos os palpites disponíveis no momento.</p>
+              ) : null}
+            </section>
 
-          <section className="stack">
-            <div className="section-heading">
-              <h2>Próximos jogos</h2>
-              <Link href="#topo" className="button secondary">Voltar ao topo</Link>
-            </div>
-            {upcomingGames.map((game) => renderPredictionCard(game))}
-            {upcomingGames.length === 0 ? <p className="muted">Nenhum próximo jogo aberto para palpite.</p> : null}
-          </section>
+            <section id="ja-feitos" className="stack">
+              <div className="section-heading">
+                <div>
+                  <h2>Palpites já feitos</h2>
+                  <p className="muted compact-text">Você pode editar os palpites enquanto o jogo ainda não começou.</p>
+                </div>
+                <Link href="#topo" className="button secondary">Voltar ao topo</Link>
+              </div>
+              {editablePredictedGames.map((game) => renderPredictionCard(game, isGameToday(game.startsAt)))}
+              {editablePredictedGames.length === 0 ? (
+                <p className="card muted">Nenhum palpite editável no momento.</p>
+              ) : null}
+            </section>
 
-          <section className="stack">
-            <div className="section-heading">
-              <h2>Jogos encerrados/bloqueados</h2>
-              <Link href="#jogos-hoje" className="button secondary">Voltar para jogos</Link>
-            </div>
-            {lockedGames.map((game) => renderPredictionCard(game))}
-            {lockedGames.length === 0 ? <p className="muted">Nenhum jogo bloqueado fora de hoje.</p> : null}
-            {games.length === 0 ? <p className="muted">Nenhum jogo cadastrado ainda.</p> : null}
-          </section>
+            <section id="bloqueados" className="stack">
+              <div className="section-heading">
+                <div>
+                  <h2>Jogos bloqueados</h2>
+                  <p className="muted compact-text">Estes jogos já começaram ou foram encerrados.</p>
+                </div>
+                <Link href="#topo" className="button secondary">Voltar ao topo</Link>
+              </div>
+              {blockedGames.map((game) => renderPredictionCard(game))}
+              {blockedGames.length === 0 ? <p className="card muted">Nenhum jogo bloqueado no momento.</p> : null}
+              {games.length === 0 ? <p className="card muted">Nenhum jogo cadastrado ainda.</p> : null}
+            </section>
+          </div>
         </>
       )}
     </main>
