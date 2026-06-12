@@ -219,6 +219,31 @@ th {
   font-size: 0.9rem;
 }
 
+.team-badge,
+.matchup-line,
+.matchup-score,
+.team-label {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.team-badge {
+  gap: 0.25rem;
+}
+
+.team-flag {
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.matchup-line,
+.matchup-score {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .public-header {
   background: #ffffff;
   border-bottom: 1px solid #e7ebf2;

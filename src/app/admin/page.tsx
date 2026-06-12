@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AdminNav } from "@/components/AdminNav";
 import { MessageBanner } from "@/components/MessageBanner";
 import { StatCard } from "@/components/StatCard";
+import { TeamBadge } from "@/components/TeamBadge";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
@@ -80,7 +81,13 @@ export default async function AdminDashboardPage({
               {todayGames.map((game) => (
                 <tr key={game.id}>
                   <td>{game.number}</td>
-                  <td>{game.homeTeam} x {game.awayTeam}</td>
+                  <td>
+                    <span className="matchup-line">
+                      <TeamBadge teamName={game.homeTeam} />
+                      <span>x</span>
+                      <TeamBadge teamName={game.awayTeam} />
+                    </span>
+                  </td>
                   <td>{game.stage}</td>
                   <td>{game.groupName ?? "-"}</td>
                   <td>{new Intl.DateTimeFormat("pt-BR", {

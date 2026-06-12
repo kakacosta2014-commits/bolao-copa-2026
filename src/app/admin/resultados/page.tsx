@@ -1,5 +1,6 @@
 import { AdminNav } from "@/components/AdminNav";
 import { MessageBanner } from "@/components/MessageBanner";
+import { TeamBadge } from "@/components/TeamBadge";
 import { saveResult } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
@@ -29,16 +30,21 @@ export default async function AdminResultsPage({
           <form key={game.id} action={saveResult} className="card stack">
             <input type="hidden" name="gameId" value={game.id} />
             <div>
-              <strong>Jogo {game.number}: {game.homeTeam} x {game.awayTeam}</strong>
+              <strong className="matchup-line">
+                <span>Jogo {game.number}:</span>
+                <TeamBadge teamName={game.homeTeam} />
+                <span>x</span>
+                <TeamBadge teamName={game.awayTeam} />
+              </strong>
               <p className="muted">{formatDateTime(game.startsAt)}</p>
             </div>
             <div className="grid-auto">
               <label>
-                Gols {game.homeTeam}
+                <span className="team-label">Gols <TeamBadge teamName={game.homeTeam} /></span>
                 <input name="homeScore" type="number" min="0" defaultValue={game.homeScore ?? 0} required />
               </label>
               <label>
-                Gols {game.awayTeam}
+                <span className="team-label">Gols <TeamBadge teamName={game.awayTeam} /></span>
                 <input name="awayScore" type="number" min="0" defaultValue={game.awayScore ?? 0} required />
               </label>
             </div>

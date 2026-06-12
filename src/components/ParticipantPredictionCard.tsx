@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { savePrediction } from "@/lib/actions";
+import { TeamBadge } from "@/components/TeamBadge";
 
 type ParticipantPredictionCardProps = {
   game: {
@@ -39,7 +40,11 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
         <div className="participant-prediction-summary">
           <div>
             <span className="muted">Placar escolhido</span>
-            <strong>{game.homeTeam} {prediction.predictedHomeScore} x {prediction.predictedAwayScore} {game.awayTeam}</strong>
+            <strong className="matchup-score">
+              <TeamBadge teamName={game.homeTeam} />
+              <span>{prediction.predictedHomeScore} x {prediction.predictedAwayScore}</span>
+              <TeamBadge teamName={game.awayTeam} />
+            </strong>
           </div>
           <div>
             <span className="muted">Jogador para marcar gol</span>
@@ -64,7 +69,12 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
     <article className="card stack participant-game-card" style={cardStyle}>
       <header className="participant-game-header">
         <div>
-          <strong>Jogo {game.number}: {game.homeTeam} x {game.awayTeam}</strong>
+          <strong className="matchup-line">
+            <span>Jogo {game.number}:</span>
+            <TeamBadge teamName={game.homeTeam} />
+            <span>x</span>
+            <TeamBadge teamName={game.awayTeam} />
+          </strong>
           <p className="muted compact-text">
             {game.stage} {game.groupName ? `- Grupo ${game.groupName}` : ""} - {game.startsAtLabel} - Horário de Brasília
           </p>
@@ -93,7 +103,7 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
           <p className="muted compact-text">Palpites abertos até o início da partida.</p>
           <div className="grid-auto">
             <label>
-              Gols {game.homeTeam}
+              <span className="team-label">Gols <TeamBadge teamName={game.homeTeam} /></span>
               <input
                 name="predictedHomeScore"
                 type="number"
@@ -103,7 +113,7 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
               />
             </label>
             <label>
-              Gols {game.awayTeam}
+              <span className="team-label">Gols <TeamBadge teamName={game.awayTeam} /></span>
               <input
                 name="predictedAwayScore"
                 type="number"

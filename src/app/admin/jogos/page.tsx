@@ -1,6 +1,7 @@
 import { GameStatus } from "@prisma/client";
 import { AdminNav } from "@/components/AdminNav";
 import { MessageBanner } from "@/components/MessageBanner";
+import { TeamBadge } from "@/components/TeamBadge";
 import { deleteGame, importDefaultGames, importGames, upsertGame } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
@@ -81,7 +82,13 @@ export default async function AdminGamesPage({
             {games.map((game) => (
               <tr key={game.id}>
                 <td>{game.number}</td>
-                <td>{game.homeTeam} x {game.awayTeam}</td>
+                <td>
+                  <span className="matchup-line">
+                    <TeamBadge teamName={game.homeTeam} />
+                    <span>x</span>
+                    <TeamBadge teamName={game.awayTeam} />
+                  </span>
+                </td>
                 <td>{game.stage} {game.groupName ? `- ${game.groupName}` : ""}</td>
                 <td>{formatDateTime(game.startsAt)}</td>
                 <td>{game.status}</td>

@@ -1,3 +1,4 @@
+import { TeamBadge } from "@/components/TeamBadge";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
 import { getTodayRange, isGameToday } from "@/lib/games";
@@ -43,7 +44,13 @@ export default async function GamesPage() {
           {games.map((game) => (
             <tr key={game.id}>
               <td>{game.number}</td>
-              <td>{game.homeTeam} x {game.awayTeam}</td>
+              <td>
+                <span className="matchup-line">
+                  <TeamBadge teamName={game.homeTeam} />
+                  <span>x</span>
+                  <TeamBadge teamName={game.awayTeam} />
+                </span>
+              </td>
               <td>{game.stage}</td>
               <td>{game.groupName ?? "-"}</td>
               <td>

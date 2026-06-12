@@ -1,5 +1,6 @@
 import { GameStatus, Prisma } from "@prisma/client";
 import { AdminNav } from "@/components/AdminNav";
+import { TeamBadge } from "@/components/TeamBadge";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatDateTime } from "@/lib/format";
@@ -229,7 +230,12 @@ export default async function AdminPredictionsPage({
                     </td>
                     <td><span className={`status-pill ${payment.className}`}>{payment.label}</span></td>
                     <td>
-                      <strong>#{prediction.game.number} {prediction.game.homeTeam} x {prediction.game.awayTeam}</strong>
+                      <strong className="matchup-line">
+                        <span>#{prediction.game.number}</span>
+                        <TeamBadge teamName={prediction.game.homeTeam} />
+                        <span>x</span>
+                        <TeamBadge teamName={prediction.game.awayTeam} />
+                      </strong>
                       <span className="muted table-detail">
                         {prediction.game.stage}{prediction.game.groupName ? ` - Grupo ${prediction.game.groupName}` : ""}
                       </span>
@@ -282,7 +288,12 @@ export default async function AdminPredictionsPage({
                 </div>
                 <div>
                   <span className="muted">Jogo</span>
-                  <strong>#{prediction.game.number} {prediction.game.homeTeam} x {prediction.game.awayTeam}</strong>
+                  <strong className="matchup-line">
+                    <span>#{prediction.game.number}</span>
+                    <TeamBadge teamName={prediction.game.homeTeam} />
+                    <span>x</span>
+                    <TeamBadge teamName={prediction.game.awayTeam} />
+                  </strong>
                   <span>{prediction.game.stage}{prediction.game.groupName ? ` - Grupo ${prediction.game.groupName}` : ""}</span>
                 </div>
                 <div>
