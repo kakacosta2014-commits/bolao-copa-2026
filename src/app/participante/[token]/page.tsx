@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { saveSpecialPrediction } from "@/lib/actions";
 import { MessageBanner } from "@/components/MessageBanner";
+import { ParticipantDisputesPanel } from "@/components/ParticipantDisputesPanel";
 import { ParticipantPredictionCard } from "@/components/ParticipantPredictionCard";
 import { prisma } from "@/lib/db";
 import { formatCurrency, formatDateTime, toNumber } from "@/lib/format";
@@ -21,13 +22,29 @@ export default async function ParticipantPage({
 }) {
   const { token } = await params;
   const { ok, erro } = await searchParams;
-  const [participant, games, settings] = await Promise.all([
+  const [participant, games, settings, activeDisputes] = await Promise.all([
     prisma.participant.findUnique({
       where: { accessToken: token },
-      include: { predictions: true, specialPrediction: true }
+      include: {
+        predictions: true,
+        specialPrediction: true,
+        disputes: {
+          include: {
+            dispute: {
+              include: { _count: { select: { games: true } } }
+            }
+          },
+          orderBy: { createdAt: "asc" }
+        }
+      }
     }),
     prisma.game.findMany({ orderBy: { startsAt: "asc" } }),
-    getSettings()
+    getSettings(),
+    prisma.dispute.findMany({
+      where: { isActive: true },
+      include: { _count: { select: { games: true } } },
+      orderBy: { createdAt: "asc" }
+    })
   ]);
 
   if (!participant) notFound();
@@ -48,6 +65,8 @@ export default async function ParticipantPage({
   const editablePredictedGames = openGames.filter((game) => predictionByGameId.has(game.id));
   const blockedWithoutPrediction = blockedGames.filter((game) => !predictionByGameId.has(game.id));
   const progressPercent = games.length > 0 ? Math.round((participantData.predictions.length / games.length) * 100) : 0;
+  const participantDisputeIds = new Set(participantData.disputes.map((item) => item.disputeId));
+  const availableDisputes = activeDisputes.filter((dispute) => !participantDisputeIds.has(dispute.id));
 
   function renderPredictionCard(game: (typeof games)[number], highlight = false) {
     const prediction = predictionByGameId.get(game.id);
@@ -100,6 +119,12 @@ export default async function ParticipantPage({
           <Link className="button secondary" href="/regras">Regras</Link>
         </nav>
       </div>
+
+      <ParticipantDisputesPanel
+        token={token}
+        participantDisputes={participantData.disputes}
+        availableDisputes={availableDisputes}
+      />
 
       <section className="card stack" aria-labelledby="resumo-palpites">
         <div className="section-heading">

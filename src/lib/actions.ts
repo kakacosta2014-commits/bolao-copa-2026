@@ -360,6 +360,55 @@ export async function saveSpecialPrediction(formData: FormData) {
   redirect(withMessage(participantPath, "ok", "Palpites especiais salvos."));
 }
 
+export async function joinDispute(formData: FormData) {
+  const token = text(formData, "token");
+  const disputeId = text(formData, "disputeId");
+  const participantPath = `/participante/${token}`;
+
+  const [participant, dispute] = await Promise.all([
+    prisma.participant.findUnique({ where: { accessToken: token }, select: { id: true } }),
+    prisma.dispute.findUnique({ where: { id: disputeId }, select: { id: true, isActive: true } })
+  ]);
+
+  if (!participant) redirect(withMessage("/", "erro", "Participante nao encontrado."));
+  if (!dispute?.isActive) {
+    redirect(withMessage(participantPath, "erro", "Esta disputa não está disponível no momento."));
+  }
+
+  const existing = await prisma.participantDispute.findUnique({
+    where: {
+      participantId_disputeId: {
+        participantId: participant.id,
+        disputeId: dispute.id
+      }
+    }
+  });
+
+  if (existing) {
+    redirect(withMessage(participantPath, "ok", "Você já participa desta disputa."));
+  }
+
+  await prisma.participantDispute.upsert({
+    where: {
+      participantId_disputeId: {
+        participantId: participant.id,
+        disputeId: dispute.id
+      }
+    },
+    create: {
+      participantId: participant.id,
+      disputeId: dispute.id,
+      paymentStatus: "PENDING",
+      paidAt: null
+    },
+    update: {}
+  });
+
+  revalidatePath(participantPath);
+  revalidatePath("/admin/disputas");
+  redirect(withMessage(participantPath, "ok", "Você entrou nesta disputa. Aguarde a confirmação do pagamento pelo administrador."));
+}
+
 export async function saveResult(formData: FormData) {
   await requireAdmin();
   const gameId = text(formData, "gameId");
