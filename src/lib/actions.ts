@@ -409,6 +409,41 @@ export async function joinDispute(formData: FormData) {
   redirect(withMessage(participantPath, "ok", "Você entrou nesta disputa. Aguarde a confirmação do pagamento pelo administrador."));
 }
 
+async function updateParticipantDisputePayment(participantDisputeId: string, paid: boolean) {
+  await requireAdmin();
+
+  const participantDispute = await prisma.participantDispute.findUnique({
+    where: { id: participantDisputeId },
+    include: { participant: { select: { accessToken: true } } }
+  });
+
+  if (!participantDispute) {
+    redirect(withMessage("/admin/disputas", "erro", "Vinculo da disputa nao encontrado."));
+  }
+
+  await prisma.participantDispute.update({
+    where: { id: participantDispute.id },
+    data: {
+      paymentStatus: paid ? "PAID" : "PENDING",
+      paidAt: paid ? new Date() : null
+    }
+  });
+
+  revalidatePath("/admin/disputas");
+  revalidatePath("/admin/ranking");
+  revalidatePath(`/participante/${participantDispute.participant.accessToken}`);
+}
+
+export async function confirmParticipantDisputePayment(formData: FormData) {
+  await updateParticipantDisputePayment(text(formData, "participantDisputeId"), true);
+  redirect(withMessage("/admin/disputas", "ok", "Pagamento da disputa confirmado."));
+}
+
+export async function markParticipantDisputePending(formData: FormData) {
+  await updateParticipantDisputePayment(text(formData, "participantDisputeId"), false);
+  redirect(withMessage("/admin/disputas", "ok", "Pagamento da disputa marcado como pendente."));
+}
+
 export async function saveResult(formData: FormData) {
   await requireAdmin();
   const gameId = text(formData, "gameId");

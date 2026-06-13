@@ -483,8 +483,16 @@ th {
   border-radius: 8px;
   display: grid;
   gap: 0.5rem;
-  grid-template-columns: minmax(160px, 1fr) auto minmax(160px, auto);
+  grid-template-columns: minmax(160px, 1fr) auto minmax(160px, auto) minmax(180px, auto);
   padding: 0.75rem;
+}
+
+.participant-dispute-payment-form {
+  margin: 0;
+}
+
+.participant-dispute-payment-form button {
+  width: 100%;
 }
 
 .participant-dispute-grid {

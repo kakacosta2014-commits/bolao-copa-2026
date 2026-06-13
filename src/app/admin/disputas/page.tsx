@@ -1,4 +1,6 @@
 import { AdminNav } from "@/components/AdminNav";
+import { MessageBanner } from "@/components/MessageBanner";
+import { confirmParticipantDisputePayment, markParticipantDisputePending } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatCurrency, formatDateTime } from "@/lib/format";
@@ -41,14 +43,20 @@ async function getDisputes() {
   });
 }
 
-export default async function AdminDisputesPage() {
+export default async function AdminDisputesPage({
+  searchParams
+}: {
+  searchParams: Promise<{ ok?: string; erro?: string }>;
+}) {
   await requireAdmin();
+  const { ok, erro } = await searchParams;
   const disputes = await getDisputes();
 
   return (
     <main className="container stack" style={{ padding: "2rem 0" }}>
       <AdminNav />
       <h1>Disputas</h1>
+      <MessageBanner ok={ok} erro={erro} />
       <p className="muted">Visualização administrativa das disputas. Pagamentos e rankings por disputa ainda não são editados nesta tela.</p>
 
       <section className="dispute-summary-grid">
@@ -190,6 +198,15 @@ export default async function AdminDisputesPage() {
                     <span className="muted">
                       {item.paidAt ? `Pago em ${formatDateTime(item.paidAt)}` : "Sem data de pagamento"}
                     </span>
+                    <form
+                      action={item.paymentStatus === "PAID" ? markParticipantDisputePending : confirmParticipantDisputePayment}
+                      className="participant-dispute-payment-form"
+                    >
+                      <input type="hidden" name="participantDisputeId" value={item.id} />
+                      <button type="submit" className={item.paymentStatus === "PAID" ? "secondary" : ""}>
+                        {item.paymentStatus === "PAID" ? "Marcar como pendente" : "Confirmar pagamento"}
+                      </button>
+                    </form>
                   </div>
                 ))}
               </div>
