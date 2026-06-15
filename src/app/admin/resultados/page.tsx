@@ -73,11 +73,15 @@ function ResultForm({ game }: { game: ResultGame }) {
       </div>
       <label>
         Jogadores que fizeram gol
+        <span className="muted table-detail">
+          Digite um jogador por linha. Para aceitar variações do mesmo jogador, use |.
+          Ex: Vinícius Júnior | Vini Jr | Vini | Vinicius Junior
+        </span>
         <textarea
           name="goalScorers"
           rows={3}
           defaultValue={game.goalScorers.map((scorer) => scorer.playerName).join("\n")}
-          placeholder="Um nome por linha ou separados por virgula"
+          placeholder={"Vinícius Júnior | Vini Jr | Vini\nRodrygo | Rodrygo Goes"}
         />
       </label>
       <button type="submit">

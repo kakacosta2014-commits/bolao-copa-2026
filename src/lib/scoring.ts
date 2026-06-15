@@ -1,3 +1,5 @@
+import { matchesGoalScorerAlias, normalizePlayerName } from "@/lib/goalScorer";
+
 export type MatchResult = "HOME" | "AWAY" | "DRAW";
 
 export type GameScoreInput = {
@@ -40,15 +42,6 @@ export function getMatchResult(homeScore: number, awayScore: number): MatchResul
   return "DRAW";
 }
 
-export function normalizePlayerName(name: string): string {
-  return name
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim()
-    .replace(/\s+/g, " ")
-    .toLowerCase();
-}
-
 export function calculateGamePredictionPoints(input: GameScoreInput): GamePoints {
   if (input.homeScore === null || input.awayScore === null) {
     return { scorePoints: 0, resultPoints: 0, goalScorerPoints: 0, totalPoints: 0 };
@@ -60,15 +53,14 @@ export function calculateGamePredictionPoints(input: GameScoreInput): GamePoints
   const resultCorrect =
     getMatchResult(input.predictedHomeScore, input.predictedAwayScore) ===
     getMatchResult(input.homeScore, input.awayScore);
-  const predictedScorer = input.predictedGoalScorer
-    ? normalizePlayerName(input.predictedGoalScorer)
-    : "";
-  const normalizedScorers = input.goalScorers.map(normalizePlayerName);
-
   const scorePoints = exact ? 10 : 0;
   const resultPoints = !exact && resultCorrect ? 5 : 0;
-  const goalScorerPoints =
-    predictedScorer && normalizedScorers.includes(predictedScorer) ? 5 : 0;
+  const goalScorerPoints = matchesGoalScorerAlias(
+    input.predictedGoalScorer,
+    input.goalScorers
+  )
+    ? 5
+    : 0;
 
   return {
     scorePoints,

@@ -158,6 +158,9 @@ export default async function AdminPredictionsPage({
     <main className="container stack" style={{ padding: "2rem 0" }}>
       <AdminNav />
       <h1>Palpites</h1>
+      <p className="muted compact-text">
+        A conferência do jogador-gol ignora acentos, maiúsculas/minúsculas e aceita aliases cadastrados no resultado com |.
+      </p>
 
       <form className="card predictions-filters" method="get">
         <label>
