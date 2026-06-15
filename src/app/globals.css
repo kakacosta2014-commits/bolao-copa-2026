@@ -597,6 +597,16 @@ th {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
+.dispute-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.dispute-tabs .button {
+  min-height: 44px;
+}
+
 .admin-ranking-summary-card {
   display: grid;
   gap: 0.25rem;
@@ -623,6 +633,10 @@ th {
 }
 
 .admin-ranking-mobile {
+  display: none;
+}
+
+.ranking-mobile {
   display: none;
 }
 
@@ -887,6 +901,18 @@ th {
 
   .admin-ranking-mobile {
     display: grid;
+  }
+
+  .ranking-desktop {
+    display: none;
+  }
+
+  .ranking-mobile {
+    display: grid;
+  }
+
+  .dispute-tabs .button {
+    flex: 1 1 140px;
   }
 
   .participant-dispute-row {

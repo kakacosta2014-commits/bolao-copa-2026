@@ -1,21 +1,25 @@
 import { AdminNav } from "@/components/AdminNav";
 import { requireAdmin } from "@/lib/admin";
-import { prisma } from "@/lib/db";
-import { formatDateTime } from "@/lib/format";
-import { getRankingData } from "@/lib/ranking";
+import { formatCurrency, formatDateTime } from "@/lib/format";
+import {
+  DISPUTE_RANKING_OPTIONS,
+  getDisputeRankingData,
+  type DisputeRankingStatusFilter
+} from "@/lib/ranking";
 
 export const dynamic = "force-dynamic";
 
 type SearchParams = {
+  disputa?: string;
   status?: string;
   q?: string;
 };
 
-function getPositionBadge(position: number) {
-  if (position === 1) return "🥇 1º";
-  if (position === 2) return "🥈 2º";
-  if (position === 3) return "🥉 3º";
-  return `${position}º`;
+function getPositionBadge(position: number | null) {
+  if (position === 1) return "1o";
+  if (position === 2) return "2o";
+  if (position === 3) return "3o";
+  return position ? `${position}o` : "-";
 }
 
 function normalizeSearch(value?: string) {
@@ -27,6 +31,16 @@ function getParticipationPercent(predictions: number, totalGames: number) {
   return `${((predictions / totalGames) * 100).toFixed(1).replace(".", ",")}%`;
 }
 
+function adminDisputeHref(slug: string) {
+  return slug === "geral" ? "/admin/ranking" : `/admin/ranking?disputa=${slug}`;
+}
+
+function toStatusFilter(value?: string): DisputeRankingStatusFilter {
+  if (value === "todos") return "all";
+  if (value === "pendente") return "pending";
+  return "paid";
+}
+
 export default async function AdminRankingPage({
   searchParams
 }: {
@@ -34,63 +48,23 @@ export default async function AdminRankingPage({
 }) {
   await requireAdmin();
   const filters = await searchParams;
-  const statusFilter = filters.status === "pago" || filters.status === "pendente" ? filters.status : "";
+  const statusFilter = toStatusFilter(filters.status);
   const query = normalizeSearch(filters.q);
+  const data = await getDisputeRankingData(filters.disputa ?? "geral", statusFilter);
 
-  const [{ ranking }, participants, totalGames, gamesWithResult, paidParticipants, pendingParticipants] = await Promise.all([
-    getRankingData(),
-    prisma.participant.findMany({
-      include: {
-        predictions: true,
-        specialPrediction: true
-      },
-      orderBy: { createdAt: "asc" }
-    }),
-    prisma.game.count(),
-    prisma.game.count({
-      where: {
-        homeScore: { not: null },
-        awayScore: { not: null }
-      }
-    }),
-    prisma.participant.count({ where: { paid: true } }),
-    prisma.participant.count({ where: { paid: false } })
-  ]);
+  if (!data) {
+    return (
+      <main className="container stack" style={{ padding: "2rem 0" }}>
+        <AdminNav />
+        <h1>Ranking administrativo</h1>
+        <p className="muted">Disputa nao encontrada.</p>
+      </main>
+    );
+  }
 
-  const rankingByParticipantId = new Map(ranking.map((item, index) => [item.id, { ...item, position: index + 1 }]));
-  const enrichedParticipants = participants
-    .map((participant) => {
-      const rankingItem = rankingByParticipantId.get(participant.id);
-      const predictionCount = participant.predictions.length;
-      const specialsComplete = Boolean(
-        participant.specialPrediction?.championTeam && participant.specialPrediction?.topScorerPlayer
-      );
-
-      return {
-        id: participant.id,
-        name: participant.name,
-        whatsapp: participant.whatsapp,
-        paid: participant.paid,
-        createdAt: participant.createdAt,
-        predictionCount,
-        specialsComplete,
-        position: rankingItem?.position ?? null,
-        totalPoints: rankingItem?.totalPoints ?? 0,
-        exactScores: rankingItem?.exactScores ?? 0,
-        correctResults: rankingItem?.correctResults ?? 0,
-        goalScorers: rankingItem?.goalScorers ?? 0
-      };
-    })
-    .sort((a, b) => {
-      if (a.position && b.position) return a.position - b.position;
-      if (a.position) return -1;
-      if (b.position) return 1;
-      return a.name.localeCompare(b.name);
-    });
-
-  const filteredParticipants = enrichedParticipants.filter((participant) => {
-    if (statusFilter === "pago" && !participant.paid) return false;
-    if (statusFilter === "pendente" && participant.paid) return false;
+  const { dispute, ranking, prizes, selectedSlug, summary } = data;
+  const leader = ranking.find((participant) => participant.position === 1);
+  const filteredParticipants = ranking.filter((participant) => {
     if (!query) return true;
 
     return (
@@ -99,55 +73,81 @@ export default async function AdminRankingPage({
     );
   });
 
-  const leader = ranking[0];
-
   return (
     <main className="container stack" style={{ padding: "2rem 0" }}>
       <AdminNav />
       <h1>Ranking administrativo</h1>
-      <p className="muted">Visão administrativa do Bolão Geral atual. O ranking público continua usando a mesma lógica.</p>
+      <p className="muted">
+        Ranking por disputa. Participantes pendentes nao entram na classificacao da disputa.
+      </p>
+
+      <nav className="dispute-tabs" aria-label="Escolher disputa">
+        {DISPUTE_RANKING_OPTIONS.map((option) => (
+          <a
+            key={option.slug}
+            className={`button ${selectedSlug === option.slug ? "" : "secondary"}`}
+            href={adminDisputeHref(option.slug)}
+          >
+            {option.label}
+          </a>
+        ))}
+      </nav>
 
       <section className="admin-ranking-summary">
-        <SummaryCard label="Participantes pagos" value={paidParticipants} />
-        <SummaryCard label="Participantes pendentes" value={pendingParticipants} />
-        <SummaryCard label="Jogos com resultado" value={gamesWithResult} />
-        <SummaryCard label="Total de jogos" value={totalGames} />
-        <SummaryCard label="Líder atual" value={leader?.name ?? "Sem líder ainda"} />
-        <SummaryCard label="Pontos do líder" value={leader?.totalPoints ?? 0} />
+        <SummaryCard label="Disputa" value={dispute.name} />
+        <SummaryCard label="Participantes pagos" value={summary.paidParticipants} />
+        <SummaryCard label="Participantes pendentes" value={summary.pendingParticipants} />
+        <SummaryCard label="Jogos da disputa" value={summary.totalGames} />
+        <SummaryCard label="Arrecadado estimado" value={formatCurrency(prizes.total)} />
+        <SummaryCard label="Organizador 20%" value={formatCurrency(prizes.organizer)} />
+        <SummaryCard label="1o lugar 40%" value={formatCurrency(prizes.firstPlace)} />
+        <SummaryCard label="2o lugar 25%" value={formatCurrency(prizes.secondPlace)} />
+        <SummaryCard label="3o lugar 15%" value={formatCurrency(prizes.thirdPlace)} />
+        <SummaryCard label="Especiais" value={summary.includesSpecialPredictions ? "Inclui" : "Nao inclui"} />
+        <SummaryCard label="Lider atual" value={leader?.name ?? "Sem lider ainda"} />
+        <SummaryCard label="Pontos do lider" value={leader?.totalPoints ?? 0} />
       </section>
 
+      {summary.totalGames === 0 ? (
+        <p className="warning-text">Esta disputa ainda nao possui jogos vinculados.</p>
+      ) : null}
+      {summary.paidParticipants === 0 ? (
+        <p className="muted">Ainda nao ha participantes pagos nesta disputa.</p>
+      ) : null}
+
       <form className="card ranking-filters" method="get">
+        <input type="hidden" name="disputa" value={selectedSlug} />
         <label>
           Buscar participante
           <input name="q" defaultValue={filters.q ?? ""} placeholder="Nome ou WhatsApp" />
         </label>
         <label>
-          Status de pagamento
-          <select name="status" defaultValue={statusFilter}>
-            <option value="">Todos</option>
+          Status de pagamento na disputa
+          <select name="status" defaultValue={filters.status ?? "pago"}>
             <option value="pago">Pagos</option>
             <option value="pendente">Pendentes</option>
+            <option value="todos">Todos</option>
           </select>
         </label>
         <div className="filter-actions">
           <button type="submit">Filtrar</button>
-          <a className="button secondary" href="/admin/ranking">Limpar</a>
+          <a className="button secondary" href={adminDisputeHref(selectedSlug)}>Limpar</a>
         </div>
       </form>
 
       <section className="stack">
-        <h2>Classificação geral</h2>
+        <h2>Classificacao - {dispute.name}</h2>
         <div className="card admin-ranking-desktop">
           <table className="admin-ranking-table">
             <thead>
               <tr>
-                <th>Posição</th>
+                <th>Posicao</th>
                 <th>Participante</th>
                 <th>WhatsApp</th>
                 <th>Status</th>
                 <th>Pontos</th>
                 <th>Palpites</th>
-                <th>Participação</th>
+                <th>Participacao</th>
                 <th>Especiais</th>
                 <th>Acertos</th>
                 <th>Cadastro</th>
@@ -156,18 +156,22 @@ export default async function AdminRankingPage({
             <tbody>
               {filteredParticipants.map((participant) => (
                 <tr key={participant.id} className={participant.position && participant.position <= 3 ? "ranking-top-row" : ""}>
-                  <td><span className="status-pill">{participant.position ? getPositionBadge(participant.position) : "-"}</span></td>
+                  <td><span className="status-pill">{getPositionBadge(participant.position)}</span></td>
                   <td><strong>{participant.name}</strong></td>
                   <td>{participant.whatsapp || "-"}</td>
                   <td>
-                    <span className={`status-pill ${participant.paid ? "status-paid" : "status-pending"}`}>
-                      {participant.paid ? "Pago" : "Pendente"}
+                    <span className={`status-pill ${participant.paymentStatus === "PAID" ? "status-paid" : "status-pending"}`}>
+                      {participant.paymentStatus === "PAID" ? "Pago" : "Pendente"}
                     </span>
                   </td>
                   <td><strong>{participant.totalPoints}</strong></td>
-                  <td>{participant.predictionCount} / {totalGames}</td>
-                  <td>{getParticipationPercent(participant.predictionCount, totalGames)}</td>
-                  <td>{participant.specialsComplete ? "Completo" : "Incompleto"}</td>
+                  <td>{participant.predictionCount} / {summary.totalGames}</td>
+                  <td>{getParticipationPercent(participant.predictionCount, summary.totalGames)}</td>
+                  <td>
+                    {summary.includesSpecialPredictions
+                      ? participant.specialsComplete ? "Completo" : "Incompleto"
+                      : "Nao se aplica"}
+                  </td>
                   <td>
                     <span className="table-detail">Exatos: {participant.exactScores}</span>
                     <span className="table-detail">Resultados: {participant.correctResults}</span>
@@ -187,20 +191,24 @@ export default async function AdminRankingPage({
               <div className="section-heading">
                 <div>
                   <strong>{participant.name}</strong>
-                  <span className="muted table-detail">{participant.whatsapp || "WhatsApp não informado"}</span>
+                  <span className="muted table-detail">{participant.whatsapp || "WhatsApp nao informado"}</span>
                 </div>
-                <span className="status-pill">{participant.position ? getPositionBadge(participant.position) : "-"}</span>
+                <span className="status-pill">{getPositionBadge(participant.position)}</span>
               </div>
               <div className="status-row">
-                <span className={`status-pill ${participant.paid ? "status-paid" : "status-pending"}`}>
-                  {participant.paid ? "Pago" : "Pendente"}
+                <span className={`status-pill ${participant.paymentStatus === "PAID" ? "status-paid" : "status-pending"}`}>
+                  {participant.paymentStatus === "PAID" ? "Pago" : "Pendente"}
                 </span>
-                <span className="status-pill">{participant.specialsComplete ? "Especiais completos" : "Especiais incompletos"}</span>
+                <span className="status-pill">
+                  {summary.includesSpecialPredictions
+                    ? participant.specialsComplete ? "Especiais completos" : "Especiais incompletos"
+                    : "Sem especiais"}
+                </span>
               </div>
               <div className="admin-ranking-card-grid">
                 <Metric label="Pontos" value={participant.totalPoints} />
-                <Metric label="Palpites" value={`${participant.predictionCount} / ${totalGames}`} />
-                <Metric label="Participação" value={getParticipationPercent(participant.predictionCount, totalGames)} />
+                <Metric label="Palpites" value={`${participant.predictionCount} / ${summary.totalGames}`} />
+                <Metric label="Participacao" value={getParticipationPercent(participant.predictionCount, summary.totalGames)} />
                 <Metric label="Exatos" value={participant.exactScores} />
                 <Metric label="Resultados" value={participant.correctResults} />
                 <Metric label="Jogador-gol" value={participant.goalScorers} />
@@ -224,7 +232,7 @@ function SummaryCard({ label, value }: { label: string; value: string | number }
   );
 }
 
-function Metric({ label, value }: { label: string; value: string | number }) {
+function Metric({ label, value }: { label: string | number; value: string | number }) {
   return (
     <div>
       <span className="muted">{label}</span>

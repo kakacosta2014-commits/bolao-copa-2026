@@ -94,6 +94,11 @@ export default async function AdminDisputesPage({
                   {dispute.includesSpecialPredictions ? "Inclui campeão e artilheiro" : "Sem especiais"}
                 </span>
               </p>
+              <p>
+                <a className="button secondary" href={`/admin/ranking?disputa=${dispute.slug}`}>
+                  Ver ranking desta disputa
+                </a>
+              </p>
               {metrics.games === 0 ? <p className="warning-text">Esta disputa ainda não possui jogos vinculados.</p> : null}
               {metrics.participants === 0 ? <p className="muted">Nenhum participante vinculado a esta disputa ainda.</p> : null}
             </article>
