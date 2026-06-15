@@ -676,6 +676,29 @@ th {
   display: none;
 }
 
+.participant-predictions-mobile {
+  display: none;
+}
+
+.participant-back-button {
+  justify-self: flex-start;
+}
+
+.participant-predictions-table {
+  font-size: 0.9rem;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.participant-predictions-table th,
+.participant-predictions-table td {
+  overflow-wrap: anywhere;
+}
+
+.participant-public-prediction-card strong {
+  overflow-wrap: anywhere;
+}
+
 .ranking-top-card {
   border-color: #f5c542;
 }
@@ -944,6 +967,14 @@ th {
   }
 
   .ranking-mobile {
+    display: grid;
+  }
+
+  .participant-predictions-desktop {
+    display: none;
+  }
+
+  .participant-predictions-mobile {
     display: grid;
   }
 

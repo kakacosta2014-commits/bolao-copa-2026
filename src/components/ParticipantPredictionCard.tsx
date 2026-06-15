@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { savePrediction } from "@/lib/actions";
 import { TeamBadge } from "@/components/TeamBadge";
@@ -94,6 +95,13 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
               </button>
             </>
           ) : null}
+          {isLocked ? (
+            <Link className="button secondary participant-edit-button" href={`/participante/${token}/palpites/${game.id}`}>
+              Ver palpites da galera
+            </Link>
+          ) : (
+            <p className="muted compact-text">Os palpites da galera serao liberados quando o jogo comecar.</p>
+          )}
           {!hasPrediction && isLocked ? <p className="muted compact-text">Palpites encerrados para este jogo.</p> : null}
         </>
       ) : (
