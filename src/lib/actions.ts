@@ -444,6 +444,50 @@ export async function markParticipantDisputePending(formData: FormData) {
   redirect(withMessage("/admin/disputas", "ok", "Pagamento da disputa marcado como pendente."));
 }
 
+function prizePercent(formData: FormData, key: string) {
+  const rawValue = text(formData, key);
+  if (!/^-?\d+$/.test(rawValue)) {
+    redirect(withMessage("/admin/disputas", "erro", "Todos os percentuais devem ser numeros inteiros."));
+  }
+  const value = Number(rawValue);
+  if (!Number.isInteger(value)) {
+    redirect(withMessage("/admin/disputas", "erro", "Todos os percentuais devem ser numeros inteiros."));
+  }
+  return value;
+}
+
+export async function updateDisputePrizePercentages(formData: FormData) {
+  await requireAdmin();
+
+  const disputeId = text(formData, "disputeId");
+  const percentages = {
+    organizerPrizePercent: prizePercent(formData, "organizerPrizePercent"),
+    firstPrizePercent: prizePercent(formData, "firstPrizePercent"),
+    secondPrizePercent: prizePercent(formData, "secondPrizePercent"),
+    thirdPrizePercent: prizePercent(formData, "thirdPrizePercent")
+  };
+  const values = Object.values(percentages);
+
+  if (values.some((value) => value < 0)) {
+    redirect(withMessage("/admin/disputas", "erro", "Nenhum percentual pode ser negativo."));
+  }
+
+  const sum = values.reduce((total, value) => total + value, 0);
+  if (sum !== 100) {
+    redirect(withMessage("/admin/disputas", "erro", "A soma dos percentuais precisa ser 100%."));
+  }
+
+  await prisma.dispute.update({
+    where: { id: disputeId },
+    data: percentages
+  });
+
+  revalidatePath("/admin/disputas");
+  revalidatePath("/admin/ranking");
+  revalidatePath("/ranking");
+  redirect(withMessage("/admin/disputas", "ok", "Percentuais de premiacao atualizados."));
+}
+
 export async function saveResult(formData: FormData) {
   await requireAdmin();
   const gameId = text(formData, "gameId");

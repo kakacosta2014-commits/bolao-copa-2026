@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { toNumber } from "@/lib/format";
-import { calculatePrizes, calculateRanking, type RankingParticipant } from "@/lib/scoring";
+import { calculatePrizes } from "@/lib/prizes";
+import { calculateRanking, type RankingParticipant } from "@/lib/scoring";
 import { getSettings } from "@/lib/settings";
 
 export const DISPUTE_RANKING_OPTIONS = [
@@ -65,10 +66,10 @@ export async function getRankingData() {
   );
 
   const prizes = calculatePrizes(paidParticipants, toNumber(settings.entryFee), {
-    organizerPercentage: toNumber(settings.organizerPercentage),
-    firstPlacePercentage: toNumber(settings.firstPlacePercentage),
-    secondPlacePercentage: toNumber(settings.secondPlacePercentage),
-    thirdPlacePercentage: toNumber(settings.thirdPlacePercentage)
+    organizerPrizePercent: toNumber(settings.organizerPercentage),
+    firstPrizePercent: toNumber(settings.firstPlacePercentage),
+    secondPrizePercent: toNumber(settings.secondPlacePercentage),
+    thirdPrizePercent: toNumber(settings.thirdPlacePercentage)
   });
 
   return { ranking, prizes, settings };
@@ -197,10 +198,10 @@ export async function getDisputeRankingData(
     });
 
   const prizes = calculatePrizes(paidParticipants, dispute.entryFeeCents / 100, {
-    organizerPercentage: 20,
-    firstPlacePercentage: 40,
-    secondPlacePercentage: 25,
-    thirdPlacePercentage: 15
+    organizerPrizePercent: dispute.organizerPrizePercent,
+    firstPrizePercent: dispute.firstPrizePercent,
+    secondPrizePercent: dispute.secondPrizePercent,
+    thirdPrizePercent: dispute.thirdPrizePercent
   });
 
   return {

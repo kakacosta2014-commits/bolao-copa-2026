@@ -15,7 +15,7 @@ export default function RulesPage() {
         <h2>Participacao</h2>
         <p>O valor de entrada e R$ 50,00. O pagamento e feito via PIX manual e confirmado pelo administrador.</p>
         <h2>Premiacao</h2>
-        <p>Do total arrecadado: 20% para o organizador, 40% para o 1o lugar, 25% para o 2o lugar e 15% para o 3o lugar.</p>
+        <p>Do total arrecadado, os percentuais de premiacao podem variar por disputa e sempre somam 100%.</p>
         <h2>Palpites dos jogos</h2>
         <p>Palpites podem ser criados ou editados somente antes do horario de inicio da partida.</p>
         <p>Placar exato vale 10 pontos. Resultado correto sem placar exato vale 5 pontos. Jogador que marcou gol vale 5 pontos extras.</p>

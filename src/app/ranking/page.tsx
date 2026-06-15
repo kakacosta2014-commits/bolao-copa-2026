@@ -60,10 +60,10 @@ export default async function RankingPage({
           <StatCard label="Jogos da disputa" value={summary.totalGames} />
           <StatCard label="Participantes pagos" value={summary.paidParticipants} />
           <StatCard label="Total arrecadado" value={formatCurrency(prizes.total)} />
-          <StatCard label="Organizador 20%" value={formatCurrency(prizes.organizer)} />
-          <StatCard label="1o lugar 40%" value={formatCurrency(prizes.firstPlace)} />
-          <StatCard label="2o lugar 25%" value={formatCurrency(prizes.secondPlace)} />
-          <StatCard label="3o lugar 15%" value={formatCurrency(prizes.thirdPlace)} />
+          <StatCard label={`Organizador ${prizes.percentages.organizerPrizePercent}%`} value={formatCurrency(prizes.organizer)} />
+          <StatCard label={`1o lugar ${prizes.percentages.firstPrizePercent}%`} value={formatCurrency(prizes.firstPlace)} />
+          <StatCard label={`2o lugar ${prizes.percentages.secondPrizePercent}%`} value={formatCurrency(prizes.secondPlace)} />
+          <StatCard label={`3o lugar ${prizes.percentages.thirdPrizePercent}%`} value={formatCurrency(prizes.thirdPlace)} />
         </div>
       </section>
 

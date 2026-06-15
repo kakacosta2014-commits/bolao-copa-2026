@@ -1,9 +1,11 @@
 import { AdminNav } from "@/components/AdminNav";
 import { MessageBanner } from "@/components/MessageBanner";
+import { PrizePercentagesForm } from "@/components/PrizePercentagesForm";
 import { confirmParticipantDisputePayment, markParticipantDisputePending } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatCurrency, formatDateTime } from "@/lib/format";
+import { calculatePrizeCents } from "@/lib/prizes";
 
 export const dynamic = "force-dynamic";
 
@@ -23,10 +25,10 @@ function getDisputeMetrics(dispute: DisputeWithRelations) {
     paid: paidParticipants.length,
     pending: dispute.participants.length - paidParticipants.length,
     totalCents,
-    organizerCents: Math.round(totalCents * 0.2),
-    firstCents: Math.round(totalCents * 0.4),
-    secondCents: Math.round(totalCents * 0.25),
-    thirdCents: Math.round(totalCents * 0.15)
+    organizerCents: calculatePrizeCents(totalCents, dispute.organizerPrizePercent),
+    firstCents: calculatePrizeCents(totalCents, dispute.firstPrizePercent),
+    secondCents: calculatePrizeCents(totalCents, dispute.secondPrizePercent),
+    thirdCents: calculatePrizeCents(totalCents, dispute.thirdPrizePercent)
   };
 }
 
@@ -84,11 +86,18 @@ export default async function AdminDisputesPage({
                 <Metric label="Arrecadado" value={centsToCurrency(metrics.totalCents)} />
               </div>
               <div className="prize-grid">
-                <Metric label="Organizador 20%" value={centsToCurrency(metrics.organizerCents)} />
-                <Metric label="1º lugar 40%" value={centsToCurrency(metrics.firstCents)} />
-                <Metric label="2º lugar 25%" value={centsToCurrency(metrics.secondCents)} />
-                <Metric label="3º lugar 15%" value={centsToCurrency(metrics.thirdCents)} />
+                <Metric label={`Organizador ${dispute.organizerPrizePercent}%`} value={centsToCurrency(metrics.organizerCents)} />
+                <Metric label={`1o lugar ${dispute.firstPrizePercent}%`} value={centsToCurrency(metrics.firstCents)} />
+                <Metric label={`2o lugar ${dispute.secondPrizePercent}%`} value={centsToCurrency(metrics.secondCents)} />
+                <Metric label={`3o lugar ${dispute.thirdPrizePercent}%`} value={centsToCurrency(metrics.thirdCents)} />
               </div>
+              <PrizePercentagesForm
+                disputeId={dispute.id}
+                organizerPrizePercent={dispute.organizerPrizePercent}
+                firstPrizePercent={dispute.firstPrizePercent}
+                secondPrizePercent={dispute.secondPrizePercent}
+                thirdPrizePercent={dispute.thirdPrizePercent}
+              />
               <p>
                 <span className="status-pill">
                   {dispute.includesSpecialPredictions ? "Inclui campeão e artilheiro" : "Sem especiais"}

@@ -53,6 +53,10 @@ model Dispute {
   slug                       String               @unique
   description                String?
   entryFeeCents              Int                  @default(5000)
+  organizerPrizePercent      Int                  @default(20)
+  firstPrizePercent          Int                  @default(40)
+  secondPrizePercent         Int                  @default(25)
+  thirdPrizePercent          Int                  @default(15)
   kind                       String
   isActive                   Boolean              @default(true)
   includesSpecialPredictions Boolean              @default(false)

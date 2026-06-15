@@ -456,6 +456,42 @@ th {
   overflow-wrap: anywhere;
 }
 
+.prize-percent-form {
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.85rem;
+}
+
+.prize-percent-fields {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+}
+
+.prize-percent-fields input {
+  min-height: 44px;
+}
+
+.prize-percent-total {
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  padding: 0.6rem 0.7rem;
+}
+
+.prize-percent-total.is-valid {
+  background: #e9f8ef;
+  color: #075f35;
+}
+
+.prize-percent-total.is-invalid {
+  background: #fff8df;
+  color: #6b5200;
+}
+
 .disputes-table {
   font-size: 0.85rem;
   min-width: 0;

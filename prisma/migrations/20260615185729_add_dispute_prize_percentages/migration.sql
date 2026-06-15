@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Dispute" ADD COLUMN     "firstPrizePercent" INTEGER NOT NULL DEFAULT 40,
+ADD COLUMN     "organizerPrizePercent" INTEGER NOT NULL DEFAULT 20,
+ADD COLUMN     "secondPrizePercent" INTEGER NOT NULL DEFAULT 25,
+ADD COLUMN     "thirdPrizePercent" INTEGER NOT NULL DEFAULT 15;

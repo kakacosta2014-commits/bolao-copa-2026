@@ -2,6 +2,13 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
+const defaultPrizePercentages = {
+  organizerPrizePercent: 20,
+  firstPrizePercent: 40,
+  secondPrizePercent: 25,
+  thirdPrizePercent: 15
+};
+
 const disputes = [
   {
     name: "Bolão Geral",
@@ -66,7 +73,7 @@ async function main() {
   for (const dispute of disputes) {
     const saved = await prisma.dispute.upsert({
       where: { slug: dispute.slug },
-      create: dispute,
+      create: { ...defaultPrizePercentages, ...dispute },
       update: dispute
     });
     disputeBySlug.set(saved.slug, saved);

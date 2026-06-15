@@ -99,10 +99,10 @@ export default async function AdminRankingPage({
         <SummaryCard label="Participantes pendentes" value={summary.pendingParticipants} />
         <SummaryCard label="Jogos da disputa" value={summary.totalGames} />
         <SummaryCard label="Arrecadado estimado" value={formatCurrency(prizes.total)} />
-        <SummaryCard label="Organizador 20%" value={formatCurrency(prizes.organizer)} />
-        <SummaryCard label="1o lugar 40%" value={formatCurrency(prizes.firstPlace)} />
-        <SummaryCard label="2o lugar 25%" value={formatCurrency(prizes.secondPlace)} />
-        <SummaryCard label="3o lugar 15%" value={formatCurrency(prizes.thirdPlace)} />
+        <SummaryCard label={`Organizador ${prizes.percentages.organizerPrizePercent}%`} value={formatCurrency(prizes.organizer)} />
+        <SummaryCard label={`1o lugar ${prizes.percentages.firstPrizePercent}%`} value={formatCurrency(prizes.firstPlace)} />
+        <SummaryCard label={`2o lugar ${prizes.percentages.secondPrizePercent}%`} value={formatCurrency(prizes.secondPlace)} />
+        <SummaryCard label={`3o lugar ${prizes.percentages.thirdPrizePercent}%`} value={formatCurrency(prizes.thirdPlace)} />
         <SummaryCard label="Especiais" value={summary.includesSpecialPredictions ? "Inclui" : "Nao inclui"} />
         <SummaryCard label="Lider atual" value={leader?.name ?? "Sem lider ainda"} />
         <SummaryCard label="Pontos do lider" value={leader?.totalPoints ?? 0} />
