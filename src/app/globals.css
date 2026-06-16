@@ -139,6 +139,40 @@ th {
   padding: 3rem 0;
 }
 
+.hero-content {
+  justify-items: center;
+  text-align: center;
+}
+
+.hero-logo {
+  height: auto;
+  max-width: min(180px, 48vw);
+}
+
+.hero-kicker {
+  color: #f5c542;
+  font-weight: 900;
+  margin: 0;
+}
+
+.hero-content h1 {
+  font-size: clamp(2.2rem, 8vw, 4.8rem);
+  line-height: 1;
+  margin: 0;
+}
+
+.hero-content > p:not(.hero-kicker) {
+  font-size: 1.15rem;
+  max-width: 680px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
 .muted {
   color: #607086;
 }
@@ -328,7 +362,16 @@ th {
 }
 
 .public-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.6rem;
   font-weight: 900;
+}
+
+.nav-logo {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
 }
 
 .public-links {
@@ -355,6 +398,35 @@ th {
   display: flex;
   gap: 1rem;
   justify-content: space-between;
+}
+
+.admin-brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.55rem;
+}
+
+.admin-logo {
+  height: 36px;
+  width: 36px;
+  object-fit: contain;
+}
+
+.admin-login-brand {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.admin-login-brand h1 {
+  margin: 0;
+}
+
+.login-logo {
+  height: auto;
+  max-width: min(132px, 42vw);
 }
 
 .admin-menu-button {
@@ -396,6 +468,20 @@ th {
 .participant-header h1,
 .section-heading h2 {
   margin: 0;
+}
+
+.participant-title {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+  min-width: min(100%, 280px);
+}
+
+.participant-logo {
+  flex: 0 0 auto;
+  height: 56px;
+  width: 56px;
+  object-fit: contain;
 }
 
 .participant-nav {

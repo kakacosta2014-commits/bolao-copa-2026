@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ResumeAccess } from "@/components/ResumeAccess";
 import { MessageBanner } from "@/components/MessageBanner";
 import { formatCurrency, toNumber } from "@/lib/format";
@@ -19,19 +20,22 @@ export default async function HomePage({
   return (
     <main>
       <section className="hero">
-        <div className="container stack">
-          <p style={{ fontWeight: 900, color: "#f5c542" }}>Bolao privado entre amigos</p>
-          <h1 style={{ fontSize: "clamp(2.2rem, 8vw, 4.8rem)", lineHeight: 1, margin: 0 }}>
-            {settings.poolName}
-          </h1>
-          <p style={{ maxWidth: 680, fontSize: "1.15rem" }}>
-            Entre no jogo, faça seus palpites da Copa e acompanhe a briga pelo topo do ranking.
-            Simples, fechado e organizado.
-          </p>
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-            <Link className="button" href="/entrar">Participar do Bolao</Link>
-            <Link className="button secondary" href="/ranking">Ver Ranking</Link>
-            <Link className="button secondary" href="/jogos">Ver jogos</Link>
+        <div className="container stack hero-content">
+          <Image
+            src="/logo-bolao-copa-2026.png"
+            alt="Bolão Copa 2026"
+            width={180}
+            height={180}
+            className="hero-logo"
+            priority
+          />
+          <p className="hero-kicker">Bolao privado entre amigos</p>
+          <h1>{settings.poolName}</h1>
+          <p>Dê seus palpites, acompanhe o ranking e dispute rodada por rodada.</p>
+          <div className="hero-actions">
+            <Link className="button" href="/entrar">Entrar no bolão</Link>
+            <Link className="button secondary" href="/ranking">Ver ranking</Link>
+            <Link className="button secondary" href="/regras">Ver regras</Link>
             <ResumeAccess />
           </div>
         </div>

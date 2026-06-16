@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -14,7 +15,15 @@ export function PublicHeader() {
     <header className="public-header">
       <nav className="container public-nav" aria-label="Navegacao principal">
         <Link href="/" className="public-brand">
-          Bolao da Copa dos Amigos
+          <Image
+            src="/logo-bolao-copa-2026.png"
+            alt="Bolão Copa 2026"
+            width={44}
+            height={44}
+            className="nav-logo"
+            priority
+          />
+          <span>Bolão Copa 2026</span>
         </Link>
         <div className="public-links">
           <Link href="/regras">Regras</Link>

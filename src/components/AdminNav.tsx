@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -24,7 +25,16 @@ export function AdminNav() {
   return (
     <nav className="card admin-nav" aria-label="Menu administrativo">
       <div className="admin-nav-top">
-        <strong>Painel Admin</strong>
+        <span className="admin-brand">
+          <Image
+            src="/logo-bolao-copa-2026.png"
+            alt="Bolão Copa 2026"
+            width={36}
+            height={36}
+            className="admin-logo"
+          />
+          <strong>Painel Admin</strong>
+        </span>
         <button
           type="button"
           className="secondary admin-menu-button"

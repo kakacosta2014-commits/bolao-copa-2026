@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { saveSpecialPrediction } from "@/lib/actions";
 import { MessageBanner } from "@/components/MessageBanner";
@@ -106,11 +107,21 @@ export default async function ParticipantPage({
       <TokenSaver token={token} />
       <MessageBanner ok={ok} erro={erro} />
       <div className="card participant-header">
-        <div>
-          <h1>Area de {participantData.name}</h1>
-          <p className="muted">
-            Status: {participantData.paid ? "pagamento confirmado" : "aguardando confirmacao de pagamento"}
-          </p>
+        <div className="participant-title">
+          <Image
+            src="/logo-bolao-copa-2026.png"
+            alt="Bolão Copa 2026"
+            width={56}
+            height={56}
+            className="participant-logo"
+            priority
+          />
+          <div>
+            <h1>Area de {participantData.name}</h1>
+            <p className="muted">
+              Status: {participantData.paid ? "pagamento confirmado" : "aguardando confirmacao de pagamento"}
+            </p>
+          </div>
         </div>
         <nav className="participant-nav" aria-label="Atalhos principais">
           <Link className="button secondary" href="#faltam-fazer">Meus palpites</Link>
