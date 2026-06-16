@@ -484,6 +484,61 @@ export async function markParticipantDisputePending(formData: FormData) {
   redirect(withMessage("/admin/disputas", "ok", "Pagamento da disputa marcado como pendente."));
 }
 
+function revalidateDisputeAdminViews() {
+  revalidatePath("/admin/disputas");
+  revalidatePath("/admin/ranking");
+  revalidatePath("/ranking");
+}
+
+export async function removePendingParticipantFromDispute(formData: FormData) {
+  await requireAdmin();
+  const participantDisputeId = text(formData, "participantDisputeId");
+
+  const participantDispute = await prisma.participantDispute.findUnique({
+    where: { id: participantDisputeId },
+    select: {
+      id: true,
+      paymentStatus: true,
+      participant: { select: { accessToken: true } }
+    }
+  });
+
+  if (!participantDispute) {
+    revalidateDisputeAdminViews();
+    redirect(withMessage("/admin/disputas", "ok", "Participante removido desta disputa."));
+  }
+
+  if (participantDispute.paymentStatus !== "PENDING") {
+    redirect(withMessage("/admin/disputas", "erro", "Nao e possivel remover vinculo pago desta disputa."));
+  }
+
+  await prisma.participantDispute.deleteMany({
+    where: {
+      id: participantDispute.id,
+      paymentStatus: "PENDING"
+    }
+  });
+
+  revalidateDisputeAdminViews();
+  revalidatePath(`/participante/${participantDispute.participant.accessToken}`);
+  redirect(withMessage("/admin/disputas", "ok", "Participante removido desta disputa."));
+}
+
+export async function removeAllPendingParticipantsFromDispute(formData: FormData) {
+  await requireAdmin();
+  const disputeId = text(formData, "disputeId");
+
+  await prisma.participantDispute.deleteMany({
+    where: {
+      disputeId,
+      paymentStatus: "PENDING"
+    }
+  });
+
+  revalidateDisputeAdminViews();
+  redirect(withMessage("/admin/disputas", "ok", "Participantes pendentes removidos desta disputa."));
+}
+
 function prizePercent(formData: FormData, key: string) {
   const rawValue = text(formData, key);
   if (!/^-?\d+$/.test(rawValue)) {

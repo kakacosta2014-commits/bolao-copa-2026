@@ -595,8 +595,24 @@ th {
   margin: 0;
 }
 
-.participant-dispute-payment-form button {
+.participant-dispute-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.participant-dispute-payment-form button,
+.participant-dispute-removal-form button {
   width: 100%;
+}
+
+.participant-dispute-removal-form {
+  margin: 0;
+}
+
+.pending-dispute-removal {
+  align-items: flex-start;
+  display: grid;
+  gap: 0.75rem;
 }
 
 .participant-dispute-grid {

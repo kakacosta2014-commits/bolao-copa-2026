@@ -1,6 +1,7 @@
 import { AdminNav } from "@/components/AdminNav";
 import { MessageBanner } from "@/components/MessageBanner";
 import { PrizePercentagesForm } from "@/components/PrizePercentagesForm";
+import { RemovePendingDisputeButton } from "@/components/RemovePendingDisputeButton";
 import { confirmParticipantDisputePayment, markParticipantDisputePending } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
@@ -190,43 +191,60 @@ export default async function AdminDisputesPage({
 
       <section className="stack">
         <h2>Participantes por disputa</h2>
-        {disputes.map((dispute) => (
-          <article key={dispute.id} className="card stack">
-            <div className="section-heading">
-              <h3>{dispute.name}</h3>
-              <span className="status-pill">{dispute.participants.length} participantes</span>
-            </div>
-            {dispute.participants.length === 0 ? (
-              <p className="muted">Nenhum participante vinculado a esta disputa ainda.</p>
-            ) : (
-              <div className="participant-dispute-list">
-                {dispute.participants.map((item) => (
-                  <div key={item.id} className="participant-dispute-row">
-                    <div>
-                      <strong>{item.participant.name}</strong>
-                      <span className="muted table-detail">{item.participant.whatsapp}</span>
-                    </div>
-                    <span className={`status-pill ${item.paymentStatus === "PAID" ? "status-paid" : "status-pending"}`}>
-                      {item.paymentStatus === "PAID" ? "Pago" : "Pendente"}
-                    </span>
-                    <span className="muted">
-                      {item.paidAt ? `Pago em ${formatDateTime(item.paidAt)}` : "Sem data de pagamento"}
-                    </span>
-                    <form
-                      action={item.paymentStatus === "PAID" ? markParticipantDisputePending : confirmParticipantDisputePayment}
-                      className="participant-dispute-payment-form"
-                    >
-                      <input type="hidden" name="participantDisputeId" value={item.id} />
-                      <button type="submit" className={item.paymentStatus === "PAID" ? "secondary" : ""}>
-                        {item.paymentStatus === "PAID" ? "Marcar como pendente" : "Confirmar pagamento"}
-                      </button>
-                    </form>
-                  </div>
-                ))}
+        {disputes.map((dispute) => {
+          const pendingParticipants = dispute.participants.filter((item) => item.paymentStatus === "PENDING");
+
+          return (
+            <article key={dispute.id} className="card stack">
+              <div className="section-heading">
+                <h3>{dispute.name}</h3>
+                <span className="status-pill">{dispute.participants.length} participantes</span>
               </div>
-            )}
-          </article>
-        ))}
+              {pendingParticipants.length > 0 ? (
+                <div className="pending-dispute-removal">
+                  <p className="warning-text">
+                    Esta acao remove apenas os vinculos pendentes desta disputa. Participantes com outras disputas continuam preservados.
+                  </p>
+                  <RemovePendingDisputeButton mode="all" disputeId={dispute.id} />
+                </div>
+              ) : null}
+              {dispute.participants.length === 0 ? (
+                <p className="muted">Nenhum participante vinculado a esta disputa ainda.</p>
+              ) : (
+                <div className="participant-dispute-list">
+                  {dispute.participants.map((item) => (
+                    <div key={item.id} className="participant-dispute-row">
+                      <div>
+                        <strong>{item.participant.name}</strong>
+                        <span className="muted table-detail">{item.participant.whatsapp}</span>
+                      </div>
+                      <span className={`status-pill ${item.paymentStatus === "PAID" ? "status-paid" : "status-pending"}`}>
+                        {item.paymentStatus === "PAID" ? "Pago" : "Pendente"}
+                      </span>
+                      <span className="muted">
+                        {item.paidAt ? `Pago em ${formatDateTime(item.paidAt)}` : "Sem data de pagamento"}
+                      </span>
+                      <div className="participant-dispute-actions">
+                        <form
+                          action={item.paymentStatus === "PAID" ? markParticipantDisputePending : confirmParticipantDisputePayment}
+                          className="participant-dispute-payment-form"
+                        >
+                          <input type="hidden" name="participantDisputeId" value={item.id} />
+                          <button type="submit" className={item.paymentStatus === "PAID" ? "secondary" : ""}>
+                            {item.paymentStatus === "PAID" ? "Marcar como pendente" : "Confirmar pagamento"}
+                          </button>
+                        </form>
+                        {item.paymentStatus === "PENDING" ? (
+                          <RemovePendingDisputeButton mode="single" participantDisputeId={item.id} />
+                        ) : null}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </article>
+          );
+        })}
       </section>
     </main>
   );
