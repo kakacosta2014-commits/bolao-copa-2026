@@ -201,6 +201,74 @@ th {
   display: none;
 }
 
+.signup-dispute-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.signup-dispute-card {
+  align-items: flex-start;
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: auto 1fr;
+  padding: 0.85rem;
+}
+
+.signup-dispute-card.is-selected {
+  background: #e9f8ef;
+  border-color: #0f8a4b;
+}
+
+.signup-dispute-card input {
+  margin-top: 0.2rem;
+  width: auto;
+}
+
+.signup-dispute-content {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+}
+
+.signup-dispute-header {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.signup-dispute-header strong,
+.signup-dispute-content span {
+  overflow-wrap: anywhere;
+}
+
+.signup-dispute-total {
+  border-radius: 8px;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem;
+}
+
+.signup-dispute-total.is-valid {
+  background: #e9f8ef;
+  color: #075f35;
+}
+
+.signup-dispute-total.is-invalid {
+  background: #fff8df;
+  color: #6b5200;
+}
+
+.signup-dispute-total strong {
+  font-size: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
 .participant-card {
   box-shadow: none;
 }

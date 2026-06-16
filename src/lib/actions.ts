@@ -120,15 +120,54 @@ export async function registerParticipant(formData: FormData) {
   const whatsapp = text(formData, "whatsapp");
   if (!name || !whatsapp) redirect(withMessage("/entrar", "erro", "Informe nome e WhatsApp."));
 
+  const selectedDisputeIds = Array.from(
+    new Set(
+      formData
+        .getAll("disputeIds")
+        .map((value) => String(value).trim())
+        .filter(Boolean)
+    )
+  );
+
+  if (selectedDisputeIds.length === 0) {
+    redirect(withMessage("/entrar", "erro", "Escolha pelo menos uma disputa para participar."));
+  }
+
+  const activeDisputes = await prisma.dispute.findMany({
+    where: {
+      id: { in: selectedDisputeIds },
+      isActive: true
+    },
+    select: { id: true }
+  });
+
+  if (activeDisputes.length !== selectedDisputeIds.length) {
+    redirect(withMessage("/entrar", "erro", "Escolha apenas disputas ativas para participar."));
+  }
+
   let participant;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      participant = await prisma.participant.create({
-        data: {
-          name,
-          whatsapp,
-          accessToken: randomBytes(24).toString("hex")
-        }
+      participant = await prisma.$transaction(async (tx) => {
+        const created = await tx.participant.create({
+          data: {
+            name,
+            whatsapp,
+            accessToken: randomBytes(24).toString("hex")
+          }
+        });
+
+        await tx.participantDispute.createMany({
+          data: activeDisputes.map((dispute) => ({
+            participantId: created.id,
+            disputeId: dispute.id,
+            paymentStatus: "PENDING",
+            paidAt: null
+          })),
+          skipDuplicates: true
+        });
+
+        return created;
       });
       break;
     } catch (error) {
@@ -137,6 +176,7 @@ export async function registerParticipant(formData: FormData) {
   }
 
   if (!participant) redirect(withMessage("/entrar", "erro", "Nao foi possivel criar seu acesso."));
+  revalidatePath("/admin/disputas");
   redirect(withMessage(`/participante/${participant.accessToken}`, "ok", "Cadastro realizado. Guarde este link para voltar depois."));
 }
 
