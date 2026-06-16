@@ -764,6 +764,10 @@ th {
   display: none;
 }
 
+.dispute-games-mobile {
+  display: none;
+}
+
 .participant-back-button {
   justify-self: flex-start;
 }
@@ -780,6 +784,22 @@ th {
 }
 
 .participant-public-prediction-card strong {
+  overflow-wrap: anywhere;
+}
+
+.dispute-games-table {
+  font-size: 0.85rem;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.dispute-games-table th,
+.dispute-games-table td {
+  overflow-wrap: anywhere;
+}
+
+.dispute-game-card strong,
+.dispute-game-card span {
   overflow-wrap: anywhere;
 }
 
@@ -1059,6 +1079,14 @@ th {
   }
 
   .participant-predictions-mobile {
+    display: grid;
+  }
+
+  .dispute-games-desktop {
+    display: none;
+  }
+
+  .dispute-games-mobile {
     display: grid;
   }
 

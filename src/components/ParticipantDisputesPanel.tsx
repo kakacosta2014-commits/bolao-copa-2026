@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { joinDispute } from "@/lib/actions";
 import { formatCurrency } from "@/lib/format";
 
@@ -8,6 +9,7 @@ type ParticipantDisputeItem = {
   dispute: {
     id: string;
     name: string;
+    slug: string;
     description: string | null;
     entryFeeCents: number;
     includesSpecialPredictions: boolean;
@@ -18,6 +20,7 @@ type ParticipantDisputeItem = {
 type AvailableDispute = {
   id: string;
   name: string;
+  slug: string;
   description: string | null;
   entryFeeCents: number;
   includesSpecialPredictions: boolean;
@@ -58,6 +61,14 @@ export function ParticipantDisputesPanel({
             {item.paymentStatus !== "PAID" ? (
               <p className="muted compact-text">Pagamento pendente de confirmação pelo administrador.</p>
             ) : null}
+            <div className="participant-dispute-actions">
+              <Link className="button secondary" href={`/participante/${token}/disputas/${item.dispute.slug}`}>
+                Ver jogos desta disputa
+              </Link>
+              <Link className="button secondary" href={`/ranking?disputa=${item.dispute.slug}`}>
+                Ver ranking desta disputa
+              </Link>
+            </div>
           </article>
         ))}
         {participantDisputes.length === 0 ? (
@@ -78,6 +89,14 @@ export function ParticipantDisputesPanel({
                 <span>{formatCurrency(dispute.entryFeeCents / 100)}</span>
                 <span>{dispute._count.games} jogos</span>
                 <span>{dispute.includesSpecialPredictions ? "Inclui campeão e artilheiro" : "Sem especiais"}</span>
+              </div>
+              <div className="participant-dispute-actions">
+                <Link className="button secondary" href={`/participante/${token}/disputas/${dispute.slug}`}>
+                  Ver jogos desta disputa
+                </Link>
+                <Link className="button secondary" href={`/ranking?disputa=${dispute.slug}`}>
+                  Ver ranking desta disputa
+                </Link>
               </div>
               <form action={joinDispute}>
                 <input type="hidden" name="token" value={token} />
