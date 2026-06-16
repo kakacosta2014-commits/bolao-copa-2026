@@ -303,6 +303,32 @@ th {
   overflow-wrap: anywhere;
 }
 
+.install-app-prompt {
+  align-items: center;
+  background: #effaf3;
+  border: 1px solid #85d8a6;
+  border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 0.9rem;
+}
+
+.install-app-prompt strong {
+  color: #075f35;
+}
+
+.install-app-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.install-app-actions button {
+  min-height: 44px;
+}
+
 .participant-card {
   box-shadow: none;
 }
@@ -1188,6 +1214,12 @@ th {
   .filter-actions,
   .filter-actions .button,
   .filter-actions button {
+    width: 100%;
+  }
+
+  .install-app-prompt,
+  .install-app-actions,
+  .install-app-actions button {
     width: 100%;
   }
 

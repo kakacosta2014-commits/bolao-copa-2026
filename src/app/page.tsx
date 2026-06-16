@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ResumeAccess } from "@/components/ResumeAccess";
+import { InstallAppPrompt } from "@/components/InstallAppPrompt";
 import { MessageBanner } from "@/components/MessageBanner";
 import { formatCurrency, toNumber } from "@/lib/format";
 import { getRankingData } from "@/lib/ranking";
@@ -42,6 +43,7 @@ export default async function HomePage({
       </section>
 
       <section className="container stack" style={{ padding: "2rem 0" }}>
+        <InstallAppPrompt />
         <MessageBanner ok={ok} erro={erro} />
         <div className="grid-auto">
           <div className="card">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { saveSpecialPrediction } from "@/lib/actions";
+import { InstallAppPrompt } from "@/components/InstallAppPrompt";
 import { MessageBanner } from "@/components/MessageBanner";
 import { ParticipantDisputesPanel } from "@/components/ParticipantDisputesPanel";
 import { ParticipantPredictionCard } from "@/components/ParticipantPredictionCard";
@@ -106,6 +107,7 @@ export default async function ParticipantPage({
     <main id="topo" className="container stack" style={{ padding: "2rem 0" }}>
       <TokenSaver token={token} />
       <MessageBanner ok={ok} erro={erro} />
+      <InstallAppPrompt />
       <div className="card participant-header">
         <div className="participant-title">
           <Image
