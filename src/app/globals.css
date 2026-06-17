@@ -173,6 +173,101 @@ th {
   justify-content: center;
 }
 
+.rules-page {
+  max-width: 1040px;
+}
+
+.rules-hero {
+  align-items: center;
+  background:
+    linear-gradient(135deg, rgba(6, 95, 53, 0.96), rgba(16, 32, 51, 0.9)),
+    radial-gradient(circle at 90% 10%, rgba(245, 197, 66, 0.8), transparent 30%);
+  color: white;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.rules-hero p {
+  color: rgba(255, 255, 255, 0.88);
+  margin: 0;
+}
+
+.rules-hero h1 {
+  margin: 0;
+}
+
+.rules-logo {
+  height: 72px;
+  object-fit: contain;
+  width: 72px;
+}
+
+.rules-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rules-score-grid,
+.rules-section-grid,
+.rules-faq-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.rules-score-grid {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.rules-section-grid,
+.rules-faq-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.rules-score-card,
+.rules-faq-card {
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem;
+}
+
+.rules-score-card span {
+  color: #607086;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.rules-score-card strong {
+  color: #075f35;
+  font-size: 1.35rem;
+}
+
+.rules-score-card p,
+.rules-card p,
+.rules-faq-card p {
+  color: #34445a;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.rules-card h2,
+.rules-faq-card h3 {
+  margin: 0;
+}
+
+.rules-footer-cta {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
 .muted {
   color: #607086;
 }
@@ -1333,6 +1428,16 @@ th {
   .install-app-prompt,
   .install-app-actions,
   .install-app-actions button {
+    width: 100%;
+  }
+
+  .rules-hero {
+    justify-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .rules-actions,
+  .rules-actions .button {
     width: 100%;
   }
 
