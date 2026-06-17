@@ -1,4 +1,4 @@
-import { ParticipantPredictionCard } from "@/components/ParticipantPredictionCard";
+import { ParticipantGameNumberFilter } from "@/components/ParticipantGameNumberFilter";
 import { formatDateTime } from "@/lib/format";
 
 type ParticipantGame = {
@@ -39,6 +39,35 @@ export function ParticipantGamesSection({
   emptyMessage: string;
   highlightedGameIds?: Set<string>;
 }) {
+  const filterGames = games.map((game) => {
+    const prediction = predictionByGameId.get(game.id);
+
+    return {
+      game: {
+        id: game.id,
+        number: game.number,
+        stage: game.stage,
+        groupName: game.groupName,
+        homeTeam: game.homeTeam,
+        awayTeam: game.awayTeam,
+        startsAtIso: game.startsAt.toISOString(),
+        startsAtLabel: formatDateTime(game.startsAt),
+        status: game.status,
+        homeScore: game.homeScore,
+        awayScore: game.awayScore
+      },
+      prediction: prediction
+        ? {
+            predictedHomeScore: prediction.predictedHomeScore,
+            predictedAwayScore: prediction.predictedAwayScore,
+            predictedGoalScorer: prediction.predictedGoalScorer,
+            totalPoints: prediction.totalPoints
+          }
+        : null,
+      highlight: highlightedGameIds.has(game.id)
+    };
+  });
+
   return (
     <section className="stack">
       <div className="section-heading">
@@ -48,42 +77,7 @@ export function ParticipantGamesSection({
         </div>
       </div>
 
-      {games.map((game) => {
-        const prediction = predictionByGameId.get(game.id);
-
-        return (
-          <ParticipantPredictionCard
-            key={game.id}
-            token={token}
-            highlight={highlightedGameIds.has(game.id)}
-            game={{
-              id: game.id,
-              number: game.number,
-              stage: game.stage,
-              groupName: game.groupName,
-              homeTeam: game.homeTeam,
-              awayTeam: game.awayTeam,
-              startsAtIso: game.startsAt.toISOString(),
-              startsAtLabel: formatDateTime(game.startsAt),
-              status: game.status,
-              homeScore: game.homeScore,
-              awayScore: game.awayScore
-            }}
-            prediction={
-              prediction
-                ? {
-                    predictedHomeScore: prediction.predictedHomeScore,
-                    predictedAwayScore: prediction.predictedAwayScore,
-                    predictedGoalScorer: prediction.predictedGoalScorer,
-                    totalPoints: prediction.totalPoints
-                  }
-                : null
-            }
-          />
-        );
-      })}
-
-      {games.length === 0 ? <p className="card muted">{emptyMessage}</p> : null}
+      <ParticipantGameNumberFilter token={token} games={filterGames} emptyMessage={emptyMessage} />
     </section>
   );
 }

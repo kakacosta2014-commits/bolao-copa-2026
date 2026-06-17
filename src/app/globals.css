@@ -650,6 +650,34 @@ th {
   box-shadow: none;
 }
 
+.participant-game-filter {
+  align-items: end;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.participant-game-filter label span {
+  font-size: 1rem;
+}
+
+.participant-game-filter input {
+  font-size: 1.1rem;
+  min-height: 48px;
+}
+
+.game-number-badge {
+  background: #effaf3;
+  border: 1px solid #b7e5c8;
+  border-radius: 999px;
+  color: #075f35;
+  display: inline-flex;
+  font-size: 0.88rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+  padding: 0.35rem 0.65rem;
+}
+
 .participant-game-header {
   align-items: flex-start;
   display: flex;
@@ -1322,6 +1350,15 @@ th {
 
   .participant-dashboard-action {
     min-height: 68px;
+  }
+
+  .participant-game-filter {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .participant-game-filter button {
+    width: 100%;
   }
 
   .progress-stats {

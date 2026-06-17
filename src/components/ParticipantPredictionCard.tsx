@@ -72,8 +72,8 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
     <article className="card stack participant-game-card" style={cardStyle}>
       <header className="participant-game-header">
         <div>
+          <span className="game-number-badge">Jogo {game.number}</span>
           <strong className="matchup-line">
-            <span>Jogo {game.number}:</span>
             <TeamBadge teamName={game.homeTeam} />
             <span>x</span>
             <TeamBadge teamName={game.awayTeam} />
