@@ -103,8 +103,8 @@ export default async function ParticipantDisputeGamesPage({
 
   return (
     <main className="container stack" style={{ padding: "2rem 0" }}>
-      <Link className="button secondary participant-back-button" href={`/participante/${token}#minhas-disputas`}>
-        Voltar aos meus palpites
+      <Link className="button secondary participant-back-button" href={`/participante/${token}/minhas-disputas`}>
+        Voltar as minhas disputas
       </Link>
 
       <section className="card stack">

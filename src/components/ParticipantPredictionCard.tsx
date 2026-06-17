@@ -16,6 +16,8 @@ type ParticipantPredictionCardProps = {
     startsAtIso: string;
     startsAtLabel: string;
     status: string;
+    homeScore?: number | null;
+    awayScore?: number | null;
   };
   prediction?: {
     predictedHomeScore: number;
@@ -80,6 +82,11 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
             {game.stage} {game.groupName ? `- Grupo ${game.groupName}` : ""} - {game.startsAtLabel} - Horário de Brasília
           </p>
           <p className="muted compact-text">Status do jogo: {game.status}</p>
+          {game.homeScore !== undefined || game.awayScore !== undefined ? (
+            <p className="muted compact-text">
+              Placar final: {game.homeScore !== null && game.awayScore !== null ? `${game.homeScore} x ${game.awayScore}` : "Aguardando resultado"}
+            </p>
+          ) : null}
         </div>
         <span className={`status-pill ${status.className}`}>{status.label}</span>
       </header>

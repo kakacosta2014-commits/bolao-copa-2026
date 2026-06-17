@@ -80,7 +80,7 @@ export default async function ParticipantGamePredictionsPage({
 
   return (
     <main className="container stack" style={{ padding: "2rem 0" }}>
-      <Link className="button secondary participant-back-button" href={`/participante/${token}#bloqueados`}>
+      <Link className="button secondary participant-back-button" href={`/participante/${token}/jogos/bloqueados`}>
         Voltar aos meus palpites
       </Link>
 

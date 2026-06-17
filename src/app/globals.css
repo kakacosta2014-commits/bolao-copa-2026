@@ -534,6 +534,56 @@ th {
   padding: 0.55rem 0.8rem;
 }
 
+.participant-dashboard {
+  gap: 0.85rem;
+}
+
+.participant-dashboard-header {
+  align-items: flex-start;
+}
+
+.participant-dashboard-summary {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.participant-dashboard-summary > div {
+  background: #f8fafc;
+  border: 1px solid #e7ebf2;
+  border-radius: 8px;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.8rem;
+}
+
+.participant-dashboard-actions {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.participant-dashboard-actions.compact-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.participant-dashboard-action {
+  background: #f8fafc;
+  border: 1px solid #d9e2ee;
+  border-radius: 8px;
+  color: #102033;
+  display: grid;
+  gap: 0.2rem;
+  min-height: 76px;
+  padding: 1rem;
+}
+
+.participant-dashboard-action span {
+  color: #607086;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .participant-nav {
   display: flex;
   flex-wrap: wrap;
@@ -1259,6 +1309,19 @@ th {
   .participant-form-actions button,
   .section-heading .button {
     width: 100%;
+  }
+
+  .participant-dashboard-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .participant-dashboard-actions,
+  .participant-dashboard-actions.compact-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .participant-dashboard-action {
+    min-height: 68px;
   }
 
   .progress-stats {
