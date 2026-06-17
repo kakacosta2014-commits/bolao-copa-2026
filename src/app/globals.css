@@ -231,6 +231,18 @@ th {
   white-space: normal;
 }
 
+.danger-zone {
+  border-top: 1px solid #fecaca;
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.25rem;
+  padding-top: 0.5rem;
+}
+
+.delete-pending-participant-form {
+  margin: 0;
+}
+
 .participants-mobile {
   display: none;
 }
@@ -712,8 +724,14 @@ th {
   gap: 0.5rem;
 }
 
+.participant-dispute-payment-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .participant-dispute-payment-form button,
-.participant-dispute-removal-form button {
+.participant-dispute-removal-form button,
+.delete-pending-participant-form button {
   width: 100%;
 }
 

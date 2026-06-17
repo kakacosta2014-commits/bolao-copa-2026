@@ -240,6 +240,74 @@ export async function deleteParticipantAction(formData: FormData) {
   redirect(withSystemMessage("/admin/participantes", "success", "participantDeleted"));
 }
 
+function adminParticipantRedirectPath(formData: FormData) {
+  const redirectTo = text(formData, "redirectTo");
+  return redirectTo === "/admin/disputas" ? redirectTo : "/admin/participantes";
+}
+
+export async function deletePendingParticipant(formData: FormData) {
+  await requireAdmin();
+  const participantId = text(formData, "participantId");
+  const redirectTo = adminParticipantRedirectPath(formData);
+
+  const result = await prisma.$transaction(async (tx) => {
+    const participant = await tx.participant.findUnique({
+      where: { id: participantId },
+      select: {
+        id: true,
+        name: true,
+        accessToken: true,
+        paid: true,
+        disputes: {
+          select: {
+            id: true,
+            paymentStatus: true
+          }
+        },
+        predictions: { select: { id: true } },
+        specialPrediction: { select: { id: true } }
+      }
+    });
+
+    if (!participant) {
+      return { status: "notFound" as const };
+    }
+
+    const hasPaidDispute = participant.disputes.some((dispute) => dispute.paymentStatus === "PAID");
+    if (participant.paid || hasPaidDispute) {
+      return { status: "hasPaidDispute" as const, accessToken: participant.accessToken };
+    }
+
+    await tx.participantDispute.deleteMany({ where: { participantId: participant.id } });
+    await tx.prediction.deleteMany({ where: { participantId: participant.id } });
+    await tx.specialPrediction.deleteMany({ where: { participantId: participant.id } });
+    await tx.participant.delete({ where: { id: participant.id } });
+
+    return {
+      status: "deleted" as const,
+      accessToken: participant.accessToken,
+      name: participant.name
+    };
+  });
+
+  revalidatePath("/admin/disputas");
+  revalidatePath("/admin/participantes");
+  revalidatePath("/admin/ranking");
+  revalidatePath("/ranking");
+
+  if (result.status === "deleted") {
+    revalidatePath(`/participante/${result.accessToken}`);
+    redirect(withMessage(redirectTo, "ok", `Participante ${result.name} excluido com segurança.`));
+  }
+
+  if (result.status === "hasPaidDispute") {
+    revalidatePath(`/participante/${result.accessToken}`);
+    redirect(withMessage(redirectTo, "erro", "Este participante possui pagamento confirmado em outra disputa e nao pode ser excluido."));
+  }
+
+  redirect(withMessage(redirectTo, "erro", "Participante nao encontrado."));
+}
+
 export async function upsertGame(formData: FormData) {
   await requireAdmin();
   const id = optionalText(formData, "id");

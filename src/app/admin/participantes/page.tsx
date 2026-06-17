@@ -1,6 +1,6 @@
 import { AdminNav } from "@/components/AdminNav";
 import { CopyAccessLink } from "@/components/CopyAccessLink";
-import { DeleteParticipantButton } from "@/components/DeleteParticipantButton";
+import { DeletePendingParticipantButton } from "@/components/DeletePendingParticipantButton";
 import { MessageBanner } from "@/components/MessageBanner";
 import { setParticipantPaid } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
@@ -22,8 +22,7 @@ export default async function AdminParticipantsPage({
     prisma.participant.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        _count: { select: { predictions: true } },
-        specialPrediction: { select: { id: true } }
+        disputes: { select: { paymentStatus: true } }
       }
     }),
     getBaseUrl()
@@ -52,7 +51,8 @@ export default async function AdminParticipantsPage({
                 {(() => {
                   const path = `/participante/${participant.accessToken}`;
                   const absoluteUrl = buildAppUrl(baseUrl, path);
-                  const canDelete = !participant.paid && participant._count.predictions === 0 && !participant.specialPrediction;
+                  const hasPaidDispute = participant.disputes.some((dispute) => dispute.paymentStatus === "PAID");
+                  const canDeletePendingParticipant = !participant.paid && !hasPaidDispute;
 
                   return (
                     <>
@@ -70,7 +70,15 @@ export default async function AdminParticipantsPage({
                               {participant.paid ? "Remover pagamento" : "Confirmar pagamento"}
                             </button>
                           </form>
-                          {canDelete ? <DeleteParticipantButton participantId={participant.id} /> : null}
+                          {canDeletePendingParticipant ? (
+                            <div className="danger-zone">
+                              <DeletePendingParticipantButton
+                                participantId={participant.id}
+                                participantName={participant.name}
+                                redirectTo="/admin/participantes"
+                              />
+                            </div>
+                          ) : null}
                         </div>
                       </td>
                     </>
@@ -86,7 +94,8 @@ export default async function AdminParticipantsPage({
         {participants.map((participant) => {
           const path = `/participante/${participant.accessToken}`;
           const absoluteUrl = buildAppUrl(baseUrl, path);
-          const canDelete = !participant.paid && participant._count.predictions === 0 && !participant.specialPrediction;
+          const hasPaidDispute = participant.disputes.some((dispute) => dispute.paymentStatus === "PAID");
+          const canDeletePendingParticipant = !participant.paid && !hasPaidDispute;
 
           return (
             <article key={participant.id} className="card participant-card">
@@ -116,7 +125,15 @@ export default async function AdminParticipantsPage({
                     {participant.paid ? "Remover pagamento" : "Confirmar pagamento"}
                   </button>
                 </form>
-                {canDelete ? <DeleteParticipantButton participantId={participant.id} /> : null}
+                {canDeletePendingParticipant ? (
+                  <div className="danger-zone">
+                    <DeletePendingParticipantButton
+                      participantId={participant.id}
+                      participantName={participant.name}
+                      redirectTo="/admin/participantes"
+                    />
+                  </div>
+                ) : null}
               </div>
             </article>
           );
