@@ -1,6 +1,7 @@
 import { registerParticipant } from "@/lib/actions";
 import { DisputeSelection } from "@/components/DisputeSelection";
 import { MessageBanner } from "@/components/MessageBanner";
+import { RecoverParticipantAccessForm } from "@/components/RecoverParticipantAccessForm";
 import { prisma } from "@/lib/db";
 
 export default async function EnterPage({
@@ -21,8 +22,10 @@ export default async function EnterPage({
     <main className="container stack" style={{ padding: "2rem 0", maxWidth: 680 }}>
       <h1>Participar do Bolao</h1>
       <MessageBanner ok={ok} erro={erro} />
+      <RecoverParticipantAccessForm />
       <form action={registerParticipant} className="card stack">
         <div className="stack">
+          <h2>Novo cadastro</h2>
           <p className="muted">
             Voce pode participar de uma ou mais disputas. Cada disputa tem premiacao e ranking proprios.
             Apos o cadastro, envie o PIX e aguarde confirmacao do administrador.

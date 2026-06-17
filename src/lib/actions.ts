@@ -29,6 +29,23 @@ function optionalText(formData: FormData, key: string) {
   return value || null;
 }
 
+function normalizeParticipantName(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
+function normalizeWhatsapp(value: string) {
+  const digits = value.replace(/\D/g, "");
+  if (digits.startsWith("55") && digits.length > 11) {
+    return digits.slice(2);
+  }
+  return digits;
+}
+
 type GameImportRow = {
   number: number;
   stage: string;
@@ -178,6 +195,46 @@ export async function registerParticipant(formData: FormData) {
   if (!participant) redirect(withMessage("/entrar", "erro", "Nao foi possivel criar seu acesso."));
   revalidatePath("/admin/disputas");
   redirect(withMessage(`/participante/${participant.accessToken}`, "ok", "Cadastro realizado. Guarde este link para voltar depois."));
+}
+
+export async function recoverParticipantAccess(formData: FormData) {
+  const name = text(formData, "name");
+  const whatsapp = text(formData, "whatsapp");
+
+  if (!name || !whatsapp) {
+    redirect(withMessage("/entrar", "erro", "Informe nome e WhatsApp cadastrados para recuperar seu acesso."));
+  }
+
+  const normalizedName = normalizeParticipantName(name);
+  const normalizedWhatsapp = normalizeWhatsapp(whatsapp);
+
+  if (!normalizedName || !normalizedWhatsapp) {
+    redirect(withMessage("/entrar", "erro", "Informe nome e WhatsApp cadastrados para recuperar seu acesso."));
+  }
+
+  const participants = await prisma.participant.findMany({
+    select: {
+      name: true,
+      whatsapp: true,
+      accessToken: true
+    }
+  });
+
+  const matches = participants.filter(
+    (participant) =>
+      normalizeParticipantName(participant.name) === normalizedName &&
+      normalizeWhatsapp(participant.whatsapp) === normalizedWhatsapp
+  );
+
+  if (matches.length === 1) {
+    redirect(`/participante/${matches[0].accessToken}`);
+  }
+
+  if (matches.length > 1) {
+    redirect(withMessage("/entrar", "erro", "Encontramos mais de um cadastro parecido. Fale com o administrador para recuperar seu acesso."));
+  }
+
+  redirect(withMessage("/entrar", "erro", "Nao encontramos um cadastro com esses dados. Verifique o nome e WhatsApp ou fale com o administrador."));
 }
 
 export async function loginAdmin(formData: FormData) {
