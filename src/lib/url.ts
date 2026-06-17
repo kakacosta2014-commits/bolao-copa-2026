@@ -1,5 +1,7 @@
 import { headers } from "next/headers";
 
+const productionFallbackUrl = "https://bolao-copa-2026-beta-navy.vercel.app";
+
 function cleanBaseUrl(value: string) {
   return value.replace(/\/+$/, "");
 }
@@ -42,7 +44,7 @@ export async function getBaseUrl() {
 
     if (!host) {
       const vercelUrl = process.env.VERCEL_URL?.trim();
-      return vercelUrl ? `https://${cleanBaseUrl(vercelUrl)}` : "";
+      return vercelUrl ? `https://${cleanBaseUrl(vercelUrl)}` : productionFallbackUrl;
     }
 
     return `${protocol}://${host}`;
@@ -50,7 +52,7 @@ export async function getBaseUrl() {
     if (configuredUrl) return cleanBaseUrl(configuredUrl);
     const vercelUrl = process.env.VERCEL_URL?.trim();
     if (vercelUrl) return `https://${cleanBaseUrl(vercelUrl)}`;
-    return "";
+    return productionFallbackUrl;
   }
 }
 

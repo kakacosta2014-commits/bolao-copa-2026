@@ -2,6 +2,7 @@ import { AdminNav } from "@/components/AdminNav";
 import { CopyAccessLink } from "@/components/CopyAccessLink";
 import { DeletePendingParticipantButton } from "@/components/DeletePendingParticipantButton";
 import { MessageBanner } from "@/components/MessageBanner";
+import { ShareParticipantAccessButton } from "@/components/ShareParticipantAccessButton";
 import { setParticipantPaid } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
@@ -63,6 +64,11 @@ export default async function AdminParticipantsPage({
                       <td>
                         <div className="participant-actions">
                           <CopyAccessLink path={path} absoluteUrl={absoluteUrl} />
+                          <ShareParticipantAccessButton
+                            participantName={participant.name}
+                            participantWhatsapp={participant.whatsapp}
+                            accessUrl={absoluteUrl}
+                          />
                           <form action={setParticipantPaid}>
                             <input type="hidden" name="id" value={participant.id} />
                             <input type="hidden" name="paid" value={participant.paid ? "false" : "true"} />
@@ -118,6 +124,11 @@ export default async function AdminParticipantsPage({
               <p className="muted compact-text">Link individual de acesso</p>
               <div className="participant-actions">
                 <CopyAccessLink path={path} absoluteUrl={absoluteUrl} />
+                <ShareParticipantAccessButton
+                  participantName={participant.name}
+                  participantWhatsapp={participant.whatsapp}
+                  accessUrl={absoluteUrl}
+                />
                 <form action={setParticipantPaid}>
                   <input type="hidden" name="id" value={participant.id} />
                   <input type="hidden" name="paid" value={participant.paid ? "false" : "true"} />

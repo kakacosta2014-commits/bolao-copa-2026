@@ -3,11 +3,13 @@ import { DeletePendingParticipantButton } from "@/components/DeletePendingPartic
 import { MessageBanner } from "@/components/MessageBanner";
 import { PrizePercentagesForm } from "@/components/PrizePercentagesForm";
 import { RemovePendingDisputeButton } from "@/components/RemovePendingDisputeButton";
+import { ShareParticipantAccessButton } from "@/components/ShareParticipantAccessButton";
 import { confirmParticipantDisputePayment, markParticipantDisputePending } from "@/lib/actions";
 import { requireAdmin } from "@/lib/admin";
 import { prisma } from "@/lib/db";
 import { formatCurrency, formatDateTime } from "@/lib/format";
 import { calculatePrizeCents } from "@/lib/prizes";
+import { buildAppUrl, getBaseUrl } from "@/lib/url";
 
 export const dynamic = "force-dynamic";
 
@@ -60,7 +62,7 @@ export default async function AdminDisputesPage({
 }) {
   await requireAdmin();
   const { ok, erro } = await searchParams;
-  const disputes = await getDisputes();
+  const [disputes, baseUrl] = await Promise.all([getDisputes(), getBaseUrl()]);
 
   return (
     <main className="container stack" style={{ padding: "2rem 0" }}>
@@ -223,6 +225,8 @@ export default async function AdminDisputesPage({
                     const hasPaidDispute = item.participant.disputes.some(
                       (participantDispute) => participantDispute.paymentStatus === "PAID"
                     );
+                    const participantPath = `/participante/${item.participant.accessToken}`;
+                    const participantAccessUrl = buildAppUrl(baseUrl, participantPath);
 
                     return (
                       <div key={item.id} className="participant-dispute-row">
@@ -238,6 +242,11 @@ export default async function AdminDisputesPage({
                         </span>
                         <div className="participant-dispute-actions">
                           <div className="participant-dispute-payment-actions">
+                            <ShareParticipantAccessButton
+                              participantName={item.participant.name}
+                              participantWhatsapp={item.participant.whatsapp}
+                              accessUrl={participantAccessUrl}
+                            />
                             <form
                               action={item.paymentStatus === "PAID" ? markParticipantDisputePending : confirmParticipantDisputePayment}
                               className="participant-dispute-payment-form"
