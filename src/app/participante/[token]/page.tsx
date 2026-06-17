@@ -6,6 +6,7 @@ import { InstallAppPrompt } from "@/components/InstallAppPrompt";
 import { MessageBanner } from "@/components/MessageBanner";
 import { ParticipantDisputesPanel } from "@/components/ParticipantDisputesPanel";
 import { ParticipantPredictionCard } from "@/components/ParticipantPredictionCard";
+import { SwitchParticipantLink } from "@/components/SwitchParticipantLink";
 import { prisma } from "@/lib/db";
 import { formatCurrency, formatDateTime, toNumber } from "@/lib/format";
 import { canPredict, isGameToday } from "@/lib/games";
@@ -123,6 +124,9 @@ export default async function ParticipantPage({
             <p className="muted">
               Status: {participantData.paid ? "pagamento confirmado" : "aguardando confirmacao de pagamento"}
             </p>
+            <div className="participant-switch-action">
+              <SwitchParticipantLink />
+            </div>
           </div>
         </div>
         <nav className="participant-nav" aria-label="Atalhos principais">

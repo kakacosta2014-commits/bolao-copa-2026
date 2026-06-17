@@ -522,6 +522,18 @@ th {
   object-fit: contain;
 }
 
+.participant-switch-action {
+  margin-top: 0.6rem;
+}
+
+.switch-participant-link {
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #34445a;
+  font-size: 0.92rem;
+  padding: 0.55rem 0.8rem;
+}
+
 .participant-nav {
   display: flex;
   flex-wrap: wrap;
