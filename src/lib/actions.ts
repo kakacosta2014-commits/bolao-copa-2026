@@ -29,6 +29,17 @@ function optionalText(formData: FormData, key: string) {
   return value || null;
 }
 
+function participantRedirectPath(formData: FormData, token: string) {
+  const participantPath = `/participante/${token}`;
+  const redirectAfterSave = text(formData, "redirectAfterSave");
+
+  if (redirectAfterSave.startsWith(`${participantPath}/`) || redirectAfterSave === participantPath) {
+    return redirectAfterSave;
+  }
+
+  return participantPath;
+}
+
 function normalizeParticipantName(value: string) {
   return value
     .normalize("NFD")
@@ -445,24 +456,24 @@ export async function importDefaultGames() {
 
 export async function savePrediction(formData: FormData) {
   const token = text(formData, "token");
-  const participantPath = `/participante/${token}`;
+  const redirectPath = participantRedirectPath(formData, token);
   const participant = await prisma.participant.findUnique({ where: { accessToken: token } });
   if (!participant) redirect(withMessage("/", "erro", "Participante nao encontrado."));
-  if (!participant.paid) redirect(withMessage(participantPath, "erro", "Pagamento ainda nao confirmado."));
+  if (!participant.paid) redirect(withMessage(redirectPath, "erro", "Pagamento ainda nao confirmado."));
 
   const gameId = text(formData, "gameId");
   const game = await prisma.game.findUnique({
     where: { id: gameId },
     include: { goalScorers: true }
   });
-  if (!game) redirect(withMessage(participantPath, "erro", "Jogo nao encontrado."));
+  if (!game) redirect(withMessage(redirectPath, "erro", "Jogo nao encontrado."));
   if (new Date() >= game.startsAt) {
-    redirect(withMessage(participantPath, "erro", "Palpites encerrados para este jogo."));
+    redirect(withMessage(redirectPath, "erro", "Palpites encerrados para este jogo."));
   }
 
   const predictedGoalScorer = optionalText(formData, "predictedGoalScorer");
   if (hasMultipleGoalScorers(predictedGoalScorer)) {
-    redirect(withMessage(participantPath, "erro", "Escolha apenas 1 jogador para marcar gol neste jogo."));
+    redirect(withMessage(redirectPath, "erro", "Escolha apenas 1 jogador para marcar gol neste jogo."));
   }
 
   const points = calculateGamePredictionPoints({
@@ -493,8 +504,9 @@ export async function savePrediction(formData: FormData) {
   });
 
   revalidatePath(`/participante/${token}`);
+  revalidatePath(redirectPath);
   revalidatePath("/ranking");
-  redirect(withMessage(participantPath, "ok", "Palpite salvo com sucesso."));
+  redirect(withMessage(redirectPath, "ok", "Palpite salvo com sucesso."));
 }
 
 export async function saveSpecialPrediction(formData: FormData) {

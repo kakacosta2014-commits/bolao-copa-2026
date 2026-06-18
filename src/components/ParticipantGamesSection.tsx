@@ -29,7 +29,8 @@ export function ParticipantGamesSection({
   games,
   predictionByGameId,
   emptyMessage,
-  highlightedGameIds = new Set<string>()
+  highlightedGameIds = new Set<string>(),
+  redirectAfterSave
 }: {
   token: string;
   title: string;
@@ -38,6 +39,7 @@ export function ParticipantGamesSection({
   predictionByGameId: Map<string, ParticipantPrediction>;
   emptyMessage: string;
   highlightedGameIds?: Set<string>;
+  redirectAfterSave?: string;
 }) {
   const filterGames = games.map((game) => {
     const prediction = predictionByGameId.get(game.id);
@@ -77,7 +79,12 @@ export function ParticipantGamesSection({
         </div>
       </div>
 
-      <ParticipantGameNumberFilter token={token} games={filterGames} emptyMessage={emptyMessage} />
+      <ParticipantGameNumberFilter
+        token={token}
+        games={filterGames}
+        emptyMessage={emptyMessage}
+        redirectAfterSave={redirectAfterSave}
+      />
     </section>
   );
 }

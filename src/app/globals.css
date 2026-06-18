@@ -754,6 +754,16 @@ th {
   box-shadow: none;
 }
 
+.pending-flow-intro,
+.pending-flow-complete {
+  border-color: #b7e5c8;
+}
+
+.pending-flow-intro h1,
+.pending-flow-complete h1 {
+  margin: 0;
+}
+
 .participant-game-filter {
   align-items: end;
   display: grid;

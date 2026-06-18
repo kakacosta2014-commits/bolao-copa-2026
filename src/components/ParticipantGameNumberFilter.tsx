@@ -33,11 +33,13 @@ type FilterGameItem = {
 export function ParticipantGameNumberFilter({
   token,
   games,
-  emptyMessage
+  emptyMessage,
+  redirectAfterSave
 }: {
   token: string;
   games: FilterGameItem[];
   emptyMessage: string;
+  redirectAfterSave?: string;
 }) {
   const [gameNumber, setGameNumber] = useState("");
   const normalizedGameNumber = gameNumber.trim();
@@ -80,6 +82,7 @@ export function ParticipantGameNumberFilter({
           game={item.game}
           prediction={item.prediction}
           highlight={item.highlight}
+          redirectAfterSave={redirectAfterSave}
         />
       ))}
 

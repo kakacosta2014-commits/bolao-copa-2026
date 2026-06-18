@@ -22,6 +22,7 @@ export default async function CompletedParticipantGamesPage({
         games={predictedGames}
         predictionByGameId={predictionByGameId}
         emptyMessage="Voce ainda nao registrou palpites."
+        redirectAfterSave={`/participante/${token}/jogos/feitos`}
       />
     </main>
   );

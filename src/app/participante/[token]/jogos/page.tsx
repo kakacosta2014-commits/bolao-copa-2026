@@ -22,6 +22,7 @@ export default async function AllParticipantGamesPage({
         games={games}
         predictionByGameId={predictionByGameId}
         emptyMessage="Nenhum jogo cadastrado ainda."
+        redirectAfterSave={`/participante/${token}/jogos`}
       />
     </main>
   );

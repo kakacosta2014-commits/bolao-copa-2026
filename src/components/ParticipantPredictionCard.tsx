@@ -27,9 +27,16 @@ type ParticipantPredictionCardProps = {
   } | null;
   token: string;
   highlight?: boolean;
+  redirectAfterSave?: string;
 };
 
-export function ParticipantPredictionCard({ game, prediction, token, highlight = false }: ParticipantPredictionCardProps) {
+export function ParticipantPredictionCard({
+  game,
+  prediction,
+  token,
+  highlight = false,
+  redirectAfterSave
+}: ParticipantPredictionCardProps) {
   const hasPrediction = Boolean(prediction);
   const isLocked = new Date() >= new Date(game.startsAtIso);
   const [isEditing, setIsEditing] = useState(!hasPrediction && !isLocked);
@@ -115,6 +122,7 @@ export function ParticipantPredictionCard({ game, prediction, token, highlight =
         <form action={savePrediction} className="stack">
           <input type="hidden" name="token" value={token} />
           <input type="hidden" name="gameId" value={game.id} />
+          {redirectAfterSave ? <input type="hidden" name="redirectAfterSave" value={redirectAfterSave} /> : null}
           <p className="muted compact-text">Palpites abertos até o início da partida.</p>
           <div className="grid-auto">
             <label>
